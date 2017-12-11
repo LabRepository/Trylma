@@ -24,4 +24,16 @@ public class Pawn {
             this.y--;
         }
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Color getColor() {
+        return color;
+    }
 }
