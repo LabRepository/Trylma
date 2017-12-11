@@ -1,6 +1,6 @@
 package Trylma.server;
 
-import Trylma.Game;
+import Trylma.Gamelobby;
 import Trylma.player.Player;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class Server {
     /**
      * Array list of current games
      */
-    private ArrayList<Game> games;
+    private ArrayList<Gamelobby> games;
     private ObjectInputStream in = null;
     private ObjectOutputStream out = null;
 
@@ -34,7 +34,7 @@ public class Server {
         this.port = port;
         servers = new ServerSocket(port);
         System.out.println("Server is running on port : " + port);
-        games = new ArrayList<Game>();
+        games = new ArrayList<Gamelobby>();
         lobby = new ArrayList<Player>();
         isrunning = true;
 
@@ -43,7 +43,7 @@ public class Server {
     public Server() throws IOException {
         servers = new ServerSocket(port);
         System.out.println("Server is running on port : " + port);
-        games = new ArrayList<Game>();
+        games = new ArrayList<Gamelobby>();
         lobby = new ArrayList<Player>();
         isrunning = true;
     }

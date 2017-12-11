@@ -11,8 +11,6 @@ public interface AbstractPlayer {
 
     int getID();
     Color getColor();
-
     void setID(int ID);
-
     void setColor(Color c);
 }
