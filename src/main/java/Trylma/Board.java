@@ -1,6 +1,8 @@
 package Trylma;
+
 /**
  * Class initializing and holding basically all the information about state of the board.
+ * Contains an array of Fields, methods for building the map, and setting up appropriate amount of pawns.
  *
  * @author Michał Budnik
  */
@@ -10,9 +12,7 @@ class Board {
 
     Fields board[][] = new Fields[height][width];
 
-
-    Board(int NoPlayers, int sets)
-    {
+    Board(int NoPlayers, int sets) {
         setupBoard();
         setupPlayers(NoPlayers, sets);
     }
@@ -35,52 +35,112 @@ class Board {
         }
     }*/
 
-    private void setupBoard(){
-        for (int i = 0; i<height; i++){
-            for (int j = 0; j<width; j++){
+    /**
+     * Initialize fields as "BLOCKED", then call methods to appropriately open playable fields.
+     */
+    private void setupBoard() {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 board[i][j] = new Fields("BLOCKED");
             }
         }
-        constructTriangle(0, 13, 12, "EMPTY");
-        constructReversedTriangle(16, 13, 12, "EMPTY");
+        constructTriangle(0, 13, 12, "EMPTY", 't');
+        constructTriangle(16, 13, 12, "EMPTY", 'r');
     }
 
-    private void constructTriangle(int start, int length, int mid, String state){
-        for(int row = 0; row<length; row++) {
-            constructLine(mid, row+start, row, state);
+    /**
+     * Method constructing triangle on the map.
+     *
+     * @param top    Sets the row where triangle's top is.
+     * @param length Sets height of the triangle.
+     * @param mid    Sets the middle column of the triangle.
+     * @param state  Sets the state of a given field.
+     * @param mode   Sets whether triangle should look like /\ or \/.
+     */
+    private void constructTriangle(int top, int length, int mid, String state, char mode) {
+        switch (mode) {
+            case 't':
+                //Grows from row = top, with every next row adds 1 to length of constructed line
+                for (int row = 0; row < length; row++) {
+                    constructLine(mid, row + top, row, state);
+                }
+                break;
+
+            case 'r':
+                //Gets smaller from row = top-length, with every next row subtracts 1 to length of constructed line
+                for (int row = length - 1; row >= 0; row--) {
+                    constructLine(mid, top - row, row, state);
+                }
+                break;
+
+            default:
+                throw new RuntimeException("modeForTriangleBuildingNotSupported");
         }
-    }
-    private void constructReversedTriangle(int end, int length, int mid, String state){
-        for(int row = length-1; row>=0; row--) {
-            constructLine(mid, end-row, row, state);
-        }
-    }
-    private void constructLine(int mid, int row, int i, String state){
-        board[row][mid + i].setState(state);
-        board[row][mid - i].setState(state);
-        if (i-2>=0){constructLine(mid, row, i-2, state);}
     }
 
-    private void setupPlayers(int NoPlayers, int sets){
-        switch(NoPlayers){
+    /**
+     * Method constructing one row of a triangle.
+     * Recursive because of repeating shapes of triangle every other line.
+     *
+     * @param mid   Setting mid column of a triangle.
+     * @param row   Setting currently working row on.
+     * @param i     Current 'offset' from the middle row, repeats offsets from 2 lines before (because of repeating shapes).
+     * @param state Setting states of a field.
+     */
+    private void constructLine(int mid, int row, int i, String state) {
+        try {
+            board[row][mid + i].setState(state);
+            board[row][mid - i].setState(state);
+        } catch (RuntimeException r) {
+            r.getMessage();
+        }
+        if (i - 2 >= 0) {
+            constructLine(mid, row, i - 2, state);
+        }
+    }
+
+    /**
+     * Based on number of players and sets they want to play with, initialises appropriate amount of pawn colors.
+     * Throws exceptions if incorrect data provided.
+     *
+     * @param NoPlayers Number of players.
+     * @param sets      Number of sets.
+     */
+    private void setupPlayers(int NoPlayers, int sets) {
+        switch (NoPlayers) {
             case 2:
-                if (sets==1){initiateTwoColors();}
-                else if (sets==2){initiateFourColors();}
-                else if (sets==3){initiateSixColors();}
-                else {throw new RuntimeException("numberOfSetsUnavailableForTWOPlayers");}
+                if (sets == 1) {
+                    initiateTwoColors();
+                } else if (sets == 2) {
+                    initiateFourColors();
+                } else if (sets == 3) {
+                    initiateSixColors();
+                } else {
+                    throw new RuntimeException("numberOfSetsUnavailableForTWOPlayers");
+                }
                 break;
             case 3:
-                if (sets==1){initiateThreeColors();}
-                else if (sets==3){initiateSixColors();}
-                else {throw new RuntimeException("numberOfSetsUnavailableForTHREEPlayers");}
+                if (sets == 1) {
+                    initiateThreeColors();
+                } else if (sets == 3) {
+                    initiateSixColors();
+                } else {
+                    throw new RuntimeException("numberOfSetsUnavailableForTHREEPlayers");
+                }
                 break;
             case 4:
-                if (sets==1){initiateFourColors();}
-                else {throw new RuntimeException("numberOfSetsUnavailableForFOURPlayers");}
+                if (sets == 1) {
+                    initiateFourColors();
+                } else {
+                    throw new RuntimeException("numberOfSetsUnavailableForFOURPlayers");
+                }
                 break;
             case 6:
-                if (sets==1){initiateSixColors();}
-                else {throw new RuntimeException("numberOfSetsUnavailableForFIVEPlayers");}
+                if (sets == 1) {
+                    initiateSixColors();
+                } else {
+                    throw new RuntimeException("numberOfSetsUnavailableForFIVEPlayers");
+                }
                 break;
             default:
                 throw new RuntimeException("numberOfPlayersIncorrect");
@@ -88,23 +148,26 @@ class Board {
     }
 
 
-    private void initiateTwoColors(){
-        constructTriangle(0, 4, 12,"BLACKPAWN");
-        constructReversedTriangle(16, 4,12, "WHITEPAWN");
+    private void initiateTwoColors() {
+        constructTriangle(0, 4, 12, "BLACKPAWN", 't');
+        constructTriangle(16, 4, 12, "WHITEPAWN", 'r');
     }
-    private void initiateThreeColors(){
-        constructReversedTriangle(7, 4,3, "YELLOWPAWN");
-        constructReversedTriangle(7, 4,21, "REDPAWN");
-        constructReversedTriangle(16, 4,12, "WHITEPAWN");
+
+    private void initiateThreeColors() {
+        constructTriangle(7, 4, 3, "YELLOWPAWN", 'r');
+        constructTriangle(7, 4, 21, "REDPAWN", 'r');
+        constructTriangle(16, 4, 12, "WHITEPAWN", 'r');
     }
-    private void initiateFourColors(){
-        constructReversedTriangle(7, 4,3, "YELLOWPAWN");
-        constructReversedTriangle(7, 4,21, "REDPAWN");
-        constructTriangle(9,4, 3, "GREENPAWN");
-        constructTriangle(9, 4,21, "BLUEPAWN");
+
+    private void initiateFourColors() {
+        constructTriangle(7, 4, 3, "YELLOWPAWN", 'r');
+        constructTriangle(7, 4, 21, "REDPAWN", 'r');
+        constructTriangle(9, 4, 3, "GREENPAWN", 't');
+        constructTriangle(9, 4, 21, "BLUEPAWN", 't');
 
     }
-    private void initiateSixColors(){
+
+    private void initiateSixColors() {
         initiateFourColors();
         initiateTwoColors();
     }

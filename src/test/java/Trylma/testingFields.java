@@ -1,9 +1,8 @@
 package Trylma;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
 
-import java.util.ArrayList;
+import org.junit.Test;
 
 public class testingFields {
 
@@ -15,6 +14,7 @@ public class testingFields {
             assertEquals("stateOutOfPossibleStatesList", r.getMessage());
         }
     }
+
     @Test
     public void testGetField() {
         try {

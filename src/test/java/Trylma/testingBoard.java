@@ -1,6 +1,7 @@
 package Trylma;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class testingBoard {
@@ -13,6 +14,7 @@ public class testingBoard {
             assertEquals("numberOfSetsUnavailableForSixPlayers", r.getMessage());
         }
     }
+
     @Test
     public void testUnsupportedAmountOfPlayers() {
         try {
@@ -21,12 +23,14 @@ public class testingBoard {
             assertEquals("numberOfPlayersIncorrect", r.getMessage());
         }
     }
+
     @Test
-    public void creatingTwoObjectsCreatesDifferentObjects(){
+    public void creatingTwoObjectsCreatesDifferentObjects() {
         try {
             Board board = new Board(4, 1);
             Board board2 = new Board(4, 1);
             assertNotEquals(board, board2);
-        } catch (RuntimeException r){ }
+        } catch (RuntimeException r) {
+        }
     }
 }
