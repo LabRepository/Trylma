@@ -1,6 +1,7 @@
 package Trylma;
 
 public class Pawn {
+    // TODO implement point
     Color color;
     private int x;
     private int y;
