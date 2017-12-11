@@ -9,8 +9,10 @@ import Trylma.Color;
  */
 public interface AbstractPlayer {
 
-    String getName();
-
+    int getID();
     Color getColor();
 
+    void setID(int ID);
+
+    void setColor(Color c);
 }
