@@ -9,6 +9,8 @@ package Trylma;
 class Board {
     private int height = 17;
     private int width = 25;
+    //Length 4 - 10 pawns, length 3 - 6 pawns, length 2 - 3 pawns
+    private int lengthOfPawnFields = 4;
 
     Fields board[][] = new Fields[height][width];
 
@@ -149,21 +151,21 @@ class Board {
 
 
     private void initiateTwoColors() {
-        constructTriangle(0, 4, 12, "BLACKPAWN", 't');
-        constructTriangle(16, 4, 12, "WHITEPAWN", 'r');
+        constructTriangle(0, lengthOfPawnFields, 12, "BLACKPAWN", 't');
+        constructTriangle(16, lengthOfPawnFields, 12, "WHITEPAWN", 'r');
     }
 
     private void initiateThreeColors() {
-        constructTriangle(7, 4, 3, "YELLOWPAWN", 'r');
-        constructTriangle(7, 4, 21, "REDPAWN", 'r');
-        constructTriangle(16, 4, 12, "WHITEPAWN", 'r');
+        constructTriangle(7, lengthOfPawnFields, 3, "YELLOWPAWN", 'r');
+        constructTriangle(7, lengthOfPawnFields, 21, "REDPAWN", 'r');
+        constructTriangle(16, lengthOfPawnFields, 12, "WHITEPAWN", 'r');
     }
 
     private void initiateFourColors() {
-        constructTriangle(7, 4, 3, "YELLOWPAWN", 'r');
-        constructTriangle(7, 4, 21, "REDPAWN", 'r');
-        constructTriangle(9, 4, 3, "GREENPAWN", 't');
-        constructTriangle(9, 4, 21, "BLUEPAWN", 't');
+        constructTriangle(7, lengthOfPawnFields, 3, "YELLOWPAWN", 'r');
+        constructTriangle(7, lengthOfPawnFields, 21, "REDPAWN", 'r');
+        constructTriangle(9, lengthOfPawnFields, 3, "GREENPAWN", 't');
+        constructTriangle(9, lengthOfPawnFields, 21, "BLUEPAWN", 't');
 
     }
 
