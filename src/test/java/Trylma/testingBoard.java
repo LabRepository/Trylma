@@ -1,8 +1,9 @@
 package Trylma;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class testingBoard {
 
@@ -11,7 +12,7 @@ public class testingBoard {
         try {
             Board board = new Board(6, 3);
         } catch (RuntimeException r) {
-            assertEquals("numberOfSetsUnavailableForSixPlayers", r.getMessage());
+            assertEquals("numberOfSetsUnavailableForFIVEPlayers", r.getMessage());
         }
     }
 
