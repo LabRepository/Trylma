@@ -1,4 +1,4 @@
-package Trylma.player;
+package Trylma.server;
 
 import Trylma.Color;
 

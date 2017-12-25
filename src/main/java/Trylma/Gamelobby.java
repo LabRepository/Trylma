@@ -1,6 +1,6 @@
 package Trylma;
 
-import Trylma.player.Player;
+import Trylma.server.Player;
 
 import java.util.ArrayList;
 

@@ -7,8 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-// TODO ADD handling logout
-// TODO ADD Handling incoming mgs
+// TODO ADD handling reset connection
 // TODO ADD GUI
 public class TestClient {
     final static int ServerPort = 12345;

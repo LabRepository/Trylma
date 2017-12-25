@@ -1,5 +1,7 @@
 package Trylma.server;
 
+import Trylma.Game;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,15 +13,16 @@ import java.util.Vector;
 
 public class TestServer {
     private static final int port = 12345;
-    static Vector<ClientHandler> ar = new Vector<>();
+    static Vector<Player> playerlist = new Vector<>();
     // counter for clients
     static int i = 0;
     private static ServerSocket ss;
     private static DataInputStream dis;
     private static DataOutputStream dos;
     private static Thread t;
-    private static ClientHandler mtch;
-
+    private static Player currentplayer;
+    // Now i will test one game implementation,
+    public Game currentgame;
     public static void main(String[] args) throws IOException {
         // server is listening on declared port
         ss = new ServerSocket(port);
@@ -36,13 +39,13 @@ public class TestServer {
             dos = new DataOutputStream(s.getOutputStream());
 
             // Create a new handler object for handling this request.
-            mtch = new ClientHandler(s, "player " + i, dis, dos);
+            currentplayer = new Player(s, "player " + i, dis, dos);
 
             // Create a new Thread with this object.
-            t = new Thread(mtch);
+            t = new Thread(currentplayer);
 
-            // add this client to active clients list
-            ar.add(mtch);
+            // add this player to active clients list
+            playerlist.add(currentplayer);
 
             // start the thread.
             t.start();
