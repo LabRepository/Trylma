@@ -9,19 +9,27 @@ public class Gamelobby {
     final private int gameid;
     private Board board;
     private ArrayList<Player> players;
-    public int NoPlayer = 0;
+    private int NoPlayer = 0;
+    private Game game;
 
+    //TODO ADD game start and write tests
     public Gamelobby(int gameid, Player first) {
         this.gameid = gameid;
         players = new ArrayList<Player>();
         NoPlayer++;
     }
 
-    public boolean addplayer(Player player) {
-        if(NoPlayer <= 6) {
+    public void addplayer(Player player) {
+        if(NoPlayer < 6) {
             players.add(player);
-            return true;
-        } return false;
+            NoPlayer++;
+        } else throw new RuntimeException("Toomanyplayers"); //TODO this doesn't work
+    }
+
+    public void addbot(){
+        if(NoPlayer <= 6) {
+   //    TODO     players.add(new Bot);
+        } else throw new RuntimeException("Youcantaddbot");
     }
 
     public void exit(Player player) {

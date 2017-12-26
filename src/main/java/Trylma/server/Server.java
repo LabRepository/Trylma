@@ -13,6 +13,7 @@ public class Server {
      * Server Port
      */
     private static final int port = 12345;
+    private boolean isrunning = false;
     /**
      * ArrayList of Players
      */
@@ -20,11 +21,11 @@ public class Server {
     /**
      * Server Listener
      */
-    private ServerSocket listener;
+    public ServerSocket listener;
     /**
      * Game Lobby of current game
      */
-    Gamelobby gamelobby;
+    static Gamelobby gamelobby;
     /**
      * Unique number of player
      */
@@ -33,6 +34,7 @@ public class Server {
     Server() {
         try {
             listener = new ServerSocket(port);
+            isrunning = true;
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -51,9 +53,9 @@ public class Server {
     }
 
     public void listening() throws IOException {
-        while (true) {
+        while (isrunning) {
             if(players.size() < 6) {
-                players.add(new Player(listener.accept()));
+                players.add(new Player(listener.accept(),NoPlayers));
                 players.get(players.size() - 1).start();
                 players.get(players.size() - 1).send("Welcome on game Server");
                 NoPlayers++;
@@ -61,4 +63,10 @@ public class Server {
 
         }
     }
+
+    public void shoutdown(){
+        isrunning = false;
+        System.out.println("BYE");
+    }
+
 }
