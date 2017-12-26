@@ -11,31 +11,31 @@ import java.util.Arrays;
  * @author Michał Budnik
  */
 class Fields {
-    //ArrayList which contains the only possible states for a field.
-    private ArrayList<String> allowedStates = new ArrayList<>(Arrays.asList("BLOCKED", "EMPTY", "BLACKPAWN", "WHITEPAWN",
-            "YELLOWPAWN", "REDPAWN", "GREENPAWN", "BLUEPAWN"));
-    private String state;
+        //ArrayList which contains the only possible states for a field.
+        private ArrayList<String> allowedStates = new ArrayList<>(Arrays.asList("BLOCKED", "EMPTY", "BLACKPAWN", "WHITEPAWN",
+                "YELLOWPAWN", "REDPAWN", "GREENPAWN", "BLUEPAWN"));
+        private String state;
 
-    Fields(String beginningState) {
-        this.state = beginningState;
-    }
-
-    /**
-     * setState checks if upcoming state is in an array of allowedStates.
-     *
-     * @return RuntimeException if provided state is incorrect, 0 if state changed successfully.
-     */
-    void setState(String newState) {
-        if (!allowedStates.contains(newState)) {
-            throw new RuntimeException("stateOutOfPossibleStatesList");
+        Fields(String beginningState) {
+                this.state = beginningState;
         }
-        this.state = newState;
-    }
 
-    /**
-     * @return Current state.
-     */
-    String getState() {
-        return this.state;
-    }
+        /**
+         * setState checks if upcoming state is in an array of allowedStates.
+         *
+         * @throws  RuntimeException if provided state is incorrect, 0 if state changed successfully.
+         */
+        void setState(String newState) {
+                if (!allowedStates.contains(newState)) {
+                        throw new RuntimeException("stateOutOfPossibleStatesList");
+                }
+                this.state = newState;
+        }
+
+        /**
+         * @return Current state.
+         */
+        String getState() {
+                return this.state;
+        }
 }
