@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * Basic player implementation
@@ -13,30 +14,27 @@ import java.net.Socket;
  * @author Jakub Czyszczonik
  */
 
-// TODO ADD HANDLING MSG TO GAME and HANDLING MSG to Server
 
-public class Player implements AbstractPlayer, Runnable {
+public class Player extends Thread implements AbstractPlayer {
     private int id;
     private Color color;
-    final DataInputStream dis;
-    final DataOutputStream dos;
+    private DataInputStream dis;
+    private DataOutputStream dos;
     Socket s;
     boolean isloggedin;
-    private String name;
 
 
-    public Player(Socket s, String name,
-                  DataInputStream dis, DataOutputStream dos) {
-        this.dis = dis;
-        this.dos = dos;
-        this.name = name;
+    public Player(Socket s) {
+
         this.s = s;
         this.isloggedin = true;
-        try {
-            dos.writeUTF("Welcome in our Trylma Server " + name);
+        try{
+            dis = new DataInputStream(s.getInputStream());
+            dos = new DataOutputStream(s.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -45,15 +43,12 @@ public class Player implements AbstractPlayer, Runnable {
         String received;
         while (isloggedin) {
             try {
-                // receive the string
                 received = dis.readUTF();
-                System.out.println(name + ": " + received);
-                this.parse(received);
+                System.out.println(id + ": " + received);
 
 
 
             } catch (IOException e) {
-
                 e.printStackTrace();
             }
 
@@ -67,16 +62,6 @@ public class Player implements AbstractPlayer, Runnable {
         }
     }
 
-
-    private void parse(String received) throws IOException {
-
-        if (received.equals("logout")) {
-            System.out.println(s + " disconnected (" + name + ")");
-            this.isloggedin = false;
-            this.s.close();
-        }
-
-    }
 
     @Override
     public int getID() {
@@ -96,6 +81,15 @@ public class Player implements AbstractPlayer, Runnable {
     @Override
     public void setColor(Color c) {
         this.color = c;
+    }
+
+    public void send(String msg){
+        try{
+            dos.writeUTF(msg);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
 }

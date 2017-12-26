@@ -9,14 +9,19 @@ public class Gamelobby {
     final private int gameid;
     private Board board;
     private ArrayList<Player> players;
+    public int NoPlayer = 0;
 
     public Gamelobby(int gameid, Player first) {
         this.gameid = gameid;
         players = new ArrayList<Player>();
+        NoPlayer++;
     }
 
-    public void addplayer(Player player) {
-        players.add(player);
+    public boolean addplayer(Player player) {
+        if(NoPlayer <= 6) {
+            players.add(player);
+            return true;
+        } return false;
     }
 
     public void exit(Player player) {

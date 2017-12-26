@@ -8,32 +8,37 @@ import java.net.Socket;
 import java.util.Scanner;
 
 // TODO ADD handling reset connection
-// TODO ADD GUI
+
 public class TestClient {
+    static DataInputStream dis;
+    static DataOutputStream dos;
     final static int ServerPort = 12345;
+    Scanner scn = new Scanner(System.in);
+    InetAddress ip;
+    Socket s;
+    Thread sendMessage;
+    Thread readMessage;
 
-    public static void main(String args[]) throws IOException {
-        Scanner scn = new Scanner(System.in);
+    TestClient(){
+        try {
+            ip = InetAddress.getByName("localhost");
+            s = new Socket(ip, ServerPort);
+            dis = new DataInputStream(s.getInputStream());
+            dos = new DataOutputStream(s.getOutputStream());
 
-        // getting localhost ip
-        InetAddress ip = InetAddress.getByName("localhost");
-
-        // establish the connection
-        Socket s = new Socket(ip, ServerPort);
-
-        // obtaining input and out streams
-        DataInputStream dis = new DataInputStream(s.getInputStream());
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-
-        // sendMessage thread
-        Thread sendMessage = new Thread(new Runnable() {
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
 
-                    // read the message to deliver.
                     String msg = scn.nextLine();
-
+                    if(msg == "jo"){
+                        msg ="lobby#join";
+                    }
                     try {
                         // write on the output stream
                         dos.writeUTF(msg);
@@ -43,9 +48,10 @@ public class TestClient {
                 }
             }
         });
+        sendMessage.start();
 
         // readMessage thread
-        Thread readMessage = new Thread(new Runnable() {
+        readMessage = new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -61,9 +67,17 @@ public class TestClient {
                 }
             }
         });
-
-        sendMessage.start();
         readMessage.start();
 
+
+        // obtaining input and out streams
+
+
+        // sendMessage thread
     }
+
+    public static void main(String args[]) throws IOException {
+        TestClient c = new TestClient();
+    }
+
 }

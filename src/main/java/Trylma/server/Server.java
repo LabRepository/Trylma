@@ -1,70 +1,64 @@
-//package Trylma.server;
-//
-//import Trylma.Gamelobby;
-//import Trylma.server.Player;
-//
-//import java.io.IOException;
-//import java.io.ObjectInputStream;
-//import java.io.ObjectOutputStream;
-//import java.net.ServerSocket;
-//import java.util.ArrayList;
-//
-///**
-// * Server for java project
-// *
-// * @author Jakub Czyszczonik
-// */
-//public class Server {
-//    private static boolean isrunning = false;
-//    private static ArrayList<Player> lobby;
-//    private static Player cur;
-//    public ServerSocket servers;
-//    /**
-//     * The port that the server listens on.
-//     */
-//    private int port = 12345;
-//    /**
-//     * Array list of current games
-//     */
-//    private ArrayList<Gamelobby> games;
-//    private ObjectInputStream in = null;
-//    private ObjectOutputStream out = null;
-//
-//    public Server(int port) throws IOException {
-//        this.port = port;
-//        servers = new ServerSocket(port);
-//        System.out.println("Server is running on port : " + port);
-//        games = new ArrayList<Gamelobby>();
-//        lobby = new ArrayList<Player>();
-//        isrunning = true;
-//
-//    }
-//
-//    public Server() throws IOException {
-//        servers = new ServerSocket(port);
-//        System.out.println("Server is running on port : " + port);
-//        games = new ArrayList<Gamelobby>();
-//        lobby = new ArrayList<Player>();
-//        isrunning = true;
-//    }
-//
-//    public static void main(String[] args) throws Exception {
-//        Server server = new Server();
-//        try {
-//            while (isrunning) {
-//                new Player(1, server.servers.accept()).start(); //TODO Players List
-//            }
-//        } finally {
-//            server.servers.close();
-//        }
-//    }
-//
-//    public boolean getstate() {
-//        return isrunning;
-//    }
-//
-//    public void shoutdown() {
-//        isrunning = false;
-//    }
-//
-//}
+package Trylma.server;
+
+import Trylma.Gamelobby;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.ArrayList;
+
+// TODO ADD CONNECTION RESET HANDLING
+
+public class Server {
+    /**
+     * Server Port
+     */
+    private static final int port = 12345;
+    /**
+     * ArrayList of Players
+     */
+    ArrayList<Player> players = new ArrayList<>();
+    /**
+     * Server Listener
+     */
+    private ServerSocket listener;
+    /**
+     * Game Lobby of current game
+     */
+    Gamelobby gamelobby;
+    /**
+     * Unique number of player
+     */
+    private volatile int NoPlayers = 0;
+
+    Server() {
+        try {
+            listener = new ServerSocket(port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("Chinese checkers server is running on " + listener);
+    }
+
+    public static void main(String[] args) {
+        Server s = new Server();
+        try {
+            s.listening();
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public void listening() throws IOException {
+        while (true) {
+            if(players.size() < 6) {
+                players.add(new Player(listener.accept()));
+                players.get(players.size() - 1).start();
+                players.get(players.size() - 1).send("Welcome on game Server");
+                NoPlayers++;
+            }
+
+        }
+    }
+}
