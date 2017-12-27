@@ -5,24 +5,25 @@ import Trylma.server.Player;
 import java.util.ArrayList;
 
 public class Gamelobby {
-    //TODO Implement construct, add fields nad methods, add legal move conditions. Builder pattern
-    final private int gameid;
+    //TODO QUEUE implementation and respond.
+    final private int gameid = 0;
     private Board board;
-    private ArrayList<Player> players;
+    private ArrayList<Player> players = new ArrayList<>();
     private int NoPlayer = 0;
-    private Game game;
+    public Game game;
 
     //TODO ADD game start and write tests
-    public Gamelobby(int gameid, Player first) {
-        this.gameid = gameid;
-        players = new ArrayList<Player>();
-        NoPlayer++;
+    public Gamelobby() {
     }
 
     public void addplayer(Player player) {
         if(NoPlayer < 6) {
-            players.add(player);
-            NoPlayer++;
+            if(!players.contains(player)) {
+                players.add(player);
+                NoPlayer++;
+            } else {
+                throw new RuntimeException("Youareinlobby");
+            }
         } else throw new RuntimeException("Toomanyplayers"); //TODO this doesn't work
     }
 
@@ -34,10 +35,15 @@ public class Gamelobby {
 
     public void exit(Player player) {
         players.remove(player);
+        NoPlayer--;
     }
 
     public void rungame() {
-        //TODO
+        // TODO Rungame
+    }
+
+    public int check(){
+        return players.size();
     }
 
     public int getGameid() {

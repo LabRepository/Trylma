@@ -3,7 +3,7 @@ package Trylma.client;
 import javax.swing.*;
 
 // TODO WRITE GUI FOR CLIENT
-public class ClientGUI extends TestClient{
+public class ClientGUI extends Client {
     private JFrame frame = new JFrame("Chinese Checkers");
 
 

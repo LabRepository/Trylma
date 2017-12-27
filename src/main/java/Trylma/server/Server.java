@@ -13,6 +13,9 @@ public class Server {
      * Server Port
      */
     private static final int port = 12345;
+    /**
+     * Server State:  true == running, false == stopped.
+     */
     private boolean isrunning = false;
     /**
      * ArrayList of Players
@@ -25,13 +28,20 @@ public class Server {
     /**
      * Game Lobby of current game
      */
-    static Gamelobby gamelobby;
+    static Gamelobby gamelobby = new Gamelobby();
     /**
      * Unique number of player
      */
-    private volatile int NoPlayers = 0;
+    public volatile int NoPlayers = 0;
+    /**
+     *
+     */
+    private static final int PLAYER_LIMIT = 6;
 
-    Server() {
+    /**
+     * Default constructor
+     */
+    public Server() {
         try {
             listener = new ServerSocket(port);
             isrunning = true;
@@ -52,21 +62,27 @@ public class Server {
         }
     }
 
+    /**
+     * Starts listening socket and add new players to Array List.
+     * @throws IOException
+     */
     public void listening() throws IOException {
         while (isrunning) {
-            if(players.size() < 6) {
+            if(players.size() < PLAYER_LIMIT) {
                 players.add(new Player(listener.accept(),NoPlayers));
                 players.get(players.size() - 1).start();
                 players.get(players.size() - 1).send("Welcome on game Server");
+                //auto joining to gameloobby
+                gamelobby.addplayer(players.get(players.size() - 1));
                 NoPlayers++;
+            } else
+            {
+                Player p = new Player(listener.accept(),99);
+                p.send("Too many players, Please come later!");
+                p.s.close();
             }
 
         }
-    }
-
-    public void shoutdown(){
-        isrunning = false;
-        System.out.println("BYE");
     }
 
 }

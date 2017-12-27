@@ -4,6 +4,7 @@ import Trylma.Color;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * Basic player implementation
@@ -41,27 +42,39 @@ public class Player extends Thread implements AbstractPlayer {
         String received;
         while (isloggedin) {
             try {
+
                 received = is.readUTF();
                 System.out.println(id + ": " + received);
                 //TODO implement methods
-                if(received.startsWith("JOIN")){
-                    Server.gamelobby.addplayer(this);
-                } else if (received.startsWith("MOVE")){
-
+                if (received.startsWith("JOIN")) {
+                    //TODO implement this when server can handle more than 1 game
+                } else if (received.startsWith("MOVE")) {
+                    move(received);
                 } else if (received.startsWith("QUIT")) {
-
+                    System.out.print(id + "QUIT");
                 } else if (received.startsWith("START")) {
-
-                } else if (received.startsWith("BOT")){
-
-                } else if (received.startsWith("START")){
-
+                    System.out.print(id + "START");
+                } else if (received.startsWith("BOT")) {
+                    System.out.print(id + "BOT");
+                } else if (received.startsWith("TEST")){
+                    try {
+                        Server.gamelobby.addplayer(this);
+                        System.out.println(Server.gamelobby.check());
+                    } catch (RuntimeException e) {
+                        System.out.println(id + " : " + e.getMessage());
+                    }
                 }
 
 
+
             } catch (IOException e) {
-                e.printStackTrace();
-            }
+                try {
+                    s.close();
+                    System.out.println(id + " Player Connection lost!");
+                    isloggedin = false;
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }            }
 
         }
         try {
@@ -102,6 +115,31 @@ public class Player extends Thread implements AbstractPlayer {
             e.printStackTrace();
         }
 
+    }
+
+    public void move(String received){
+//        if (color == Server.gamelobby.game.getCurrentplayercolor()) { //TODO THIS MOMENT Doesn't work
+//            StringTokenizer st = new StringTokenizer(received, ";");
+//            st.nextToken();
+//            System.out.print(st.nextToken());
+//            System.out.print(st.nextToken());
+//            int startX = Integer.parseInt(st.nextToken());
+//            int startY = Integer.parseInt(st.nextToken());
+//            int goalX = Integer.parseInt(st.nextToken());
+//            int goalY = Integer.parseInt(st.nextToken());
+
+//            if (Server.gamelobby.game.legalmove(startX,startY,goalX,goalY)) {
+//  //              Server.gamelobby.game.move(startX, startY, goalX, goalY);
+//                //TODO Write to all players in game (recieved) as move
+//            } else {
+//                try {
+//                    os.writeUTF("Wrong Move");
+//                    os.flush();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
 }

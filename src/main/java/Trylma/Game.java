@@ -3,18 +3,20 @@ package Trylma;
 import java.util.ArrayList;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.sqrt;
 
 public class Game {
     /*private*/ Board board;
     private ArrayList<ArrayList<Tuple>> paths;
+    private Color currentplayer;
+    //TODO implement player queue
+
 
 
     Game(int players, int sets) {
         board = new Board(players, sets);
     }
 
-    boolean legalmove(int startX, int startY, int goalX, int goalY) {
+    public boolean legalmove(int startX, int startY, int goalX, int goalY) {
         if (!board.board[goalX][goalY].getState().equals("EMPTY")) {
             return false;/*
             throw new RuntimeException("MoveNotAllowed: final field not empty!");*/
@@ -69,5 +71,9 @@ public class Game {
         }
         return false;
         //throw new RuntimeException("Move not possible!");
+    }
+
+    public Color getCurrentplayercolor() {
+        return currentplayer;
     }
 }
