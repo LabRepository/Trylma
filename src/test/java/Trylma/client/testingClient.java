@@ -11,12 +11,12 @@ public class testingClient {
 
     @Test
     public void testmovelegal(){
-        c.move(1,1,0,0);
+        c.sendmove(1,1,0,0);
     }
     @Test
     public void testmoveillegal(){
         try {
-            c.move(2,1,0,3);
+            c.sendmove(2,1,0,3);
         } catch (RuntimeException r) {
             assertEquals("InvalidMove", r.getMessage());
         }
