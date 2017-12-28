@@ -8,7 +8,6 @@ public class Game {
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
     private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
 
-
     Game(int players, int sets) {
         board = new Board(players, sets);
     }
@@ -17,16 +16,37 @@ public class Game {
         if (legalmove(startX, startY, goalX, goalY)){
             board.board[goalX][goalY].setState(board.board[startX][startY].getState());
             board.board[startX][startY].setState("EMPTY");
+            checkWin(goalX, goalY);
         } else {
             throw new RuntimeException("Move not legal!");
         }
     }
 
-    void checkWin(){
+    private void checkWin(int x, int y){
+        switch (board.board[x][y].getState()) {
+            case "BLACKPAWN":
+                board.board[x][y].setAtFinish(blackWinArea(x, y));
+                break;
+            case "REDPAWN":
+                board.board[x][y].setAtFinish(redWinArea(x, y));
+                break;
+            case "BLUEPAWN":
+                board.board[x][y].setAtFinish(blueWinArea(x, y));
+                break;
+            case "WHITEPAWN":
+                board.board[x][y].setAtFinish(whiteWinArea(x, y));
+                break;
+            case "GREENPAWN":
+                board.board[x][y].setAtFinish(greenWinArea(x, y));
+                break;
+            case "YELLOWPAWN":
+                board.board[x][y].setAtFinish(yellowWinArea(x, y));
+                break;
 
+        }
     }
 
-    boolean legalmove(int startX, int startY, int goalX, int goalY) {
+    private boolean legalmove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
         if (abs(goalX-startX)>2 || abs(goalY-startY)>1) {
             checkJump(startX, startY, goalX, goalY);
@@ -86,5 +106,24 @@ public class Game {
             }
         }
         throw new RuntimeException("Move not legal!");
+    }
+
+    private boolean blueWinArea(int x, int y){
+        return((x<5 && 3<y && y<8) || (x<7 && 3<y && y<6));
+    }
+    private boolean whiteWinArea(int x, int y){
+        return(y<4);
+    }
+    private boolean greenWinArea(int x, int y){
+        return((x>19 && 3<y && y<8) || (x>17 && 3<y && y<6));
+    }
+    private boolean yellowWinArea(int x, int y){
+        return((x>19 && 8<y && y<13) || (x>17 && 10<y && y<13));
+    }
+    private boolean blackWinArea(int x, int y){
+        return(y>12);
+    }
+    private boolean redWinArea(int x, int y){
+        return((x<5 && 8<y && y<13) || (x<7 && 10<y && y<13));
     }
 }
