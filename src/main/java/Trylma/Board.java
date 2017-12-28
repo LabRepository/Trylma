@@ -141,7 +141,7 @@ class Board {
                 if (sets == 1) {
                     initiateSixColors();
                 } else {
-                    throw new RuntimeException("numberOfSetsUnavailableForFIVEPlayers");
+                    throw new RuntimeException("numberOfSetsUnavailableForSIXPlayers");
                 }
                 break;
             default:
