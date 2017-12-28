@@ -75,7 +75,7 @@ public class Game {
         }
     }
 
-    private boolean legalMove(int startX, int startY, int goalX, int goalY) {
+    boolean legalMove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
         if (abs(goalX-startX)>2 || abs(goalY-startY)>1) {
             checkJump(startX, startY, goalX, goalY);
