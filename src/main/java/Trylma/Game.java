@@ -9,6 +9,7 @@ public class Game {
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
     private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
 
+
     Game(int players, int sets) {
         board = new Board(players, sets);
     }
