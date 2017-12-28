@@ -1,14 +1,16 @@
 package Trylma.client;
 
+import Trylma.Color;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
-// TODO ADD handling reset connection
-
+//TODO Write doc and tests
 public class Client {
     static DataInputStream dis;
     static DataOutputStream dos;
@@ -18,6 +20,13 @@ public class Client {
     Socket s;
     Thread sendMessage;
     Thread readMessage;
+    String turn = "";
+    String info = "";
+    String msg;
+    StringTokenizer st;
+    Integer gamesize;
+    Color color;
+
 
     Client() {
         try {
@@ -30,12 +39,14 @@ public class Client {
             e.printStackTrace();
             System.exit(1);
         }
+        //TODO delete this when gui would be implemented
         sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     String msg = scn.nextLine();
                     try {
+
                         dos.writeUTF(msg);
                     } catch (IOException e) {
                         try {
@@ -51,16 +62,14 @@ public class Client {
         });
         sendMessage.start();
 
+        //TODO implement input handling to be continued
         // readMessage thread
         readMessage = new Thread(new Runnable() {
             @Override
             public void run() {
-
                 while (true) {
                     try {
-                        // read the message sent to this client
-                        String msg = dis.readUTF();
-                        System.out.println(msg);
+                        msg = dis.readUTF();
                     } catch (IOException e) {
                         try {
                             s.close();
@@ -69,6 +78,7 @@ public class Client {
                             e1.printStackTrace();
                         }
                     }
+                    inputhandler();
                 }
             }
         });
@@ -76,11 +86,56 @@ public class Client {
     }
 
     /**
-     * Function send "JOIN" (to game lobby) request to server
-     *
-     * @param lobbyid Lobby ID / Here we use only one lobby
+     * Function for handling inupts
      */
-    public void joinlobby(int lobbyid) {
+
+    private void inputhandler(){
+        if(msg != null){
+            if(msg.startsWith("START")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                gamesize = Integer.parseInt(st.nextToken());
+                //TODO implement game start on client side
+            } else if(msg.startsWith("Wrng")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                info = st.nextToken();
+            } else if(msg.startsWith("MOVE")){
+                StringTokenizer st = new StringTokenizer(msg,";");
+                st.nextToken();
+                int startX = Integer.parseInt(st.nextToken());
+                int startY = Integer.parseInt(st.nextToken());
+                int goalX = Integer.parseInt(st.nextToken());
+                int goalY = Integer.parseInt(st.nextToken());
+                //TODO implement move on client side
+            } else if(msg.startsWith("RESTART")){
+                //TODO implement game restart
+            } else if(msg.startsWith("TURN")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                turn = st.nextToken();
+                turn = turn + " turn";
+            } else if(msg.startsWith("WIN")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                info = st.nextToken() + " Wins!";
+                //TODO ENDGAME IMPLEMENT (back to start game...  etc)
+            } else if(msg.startsWith("COLOR")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                String color =  st.nextToken();
+                castcolor(color); //TODO implement this function (below)
+            }
+
+        }
+    }
+    /**
+     * Function send "JOIN" (to game lobby) request to server
+     * Use this when server can handle more than 1 game
+     * @param lobbyid Lobby ID / Here we use only one lobby
+     * @see Trylma.server.Server
+     */
+    public void sendjoinlobby(int lobbyid) {
         try {
             if (lobbyid != 0) {
                 dos.writeUTF("JOIN " + lobbyid);
@@ -96,14 +151,11 @@ public class Client {
 
     /**
      * Function send "QUIT" (from game lobby) request to server
+     * Use this when server can handle more than 1 game
+     * @see Trylma.server.Server
      */
-    public void quitlobby() {
-        try {
-            dos.writeUTF("QUIT");
-            dos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void sendquitlobby() {
+        send("QUIT");
     }
 
     /**
@@ -112,32 +164,55 @@ public class Client {
      *
      * @param xs x start point
      * @param ys y start point
-     * @param xe x end point
-     * @param ye y end point
+     * @param xe x goal point
+     * @param ye y goal point
      *
      */
-    public void move(int xs, int ys, int xe, int ye) {
+    public void sendmove(int xs, int ys, int xe, int ye) {
             int x = xe - xs;
             int y = ys - ye;
         if ((x == 1 && y == 1) || (x == 1 && y == -1) || (x == -1 && y == 1) ||
                 (x == -1 && y == -1) || (x == 2 && y == 0) || (x == -2 && y == 0)) {
-            try {
-                dos.writeUTF("MOVE;" + xs + ";" + ys + ";" + xe + ";" + ye);
-                dos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("InvalidMove");
-            }
-        } else throw new RuntimeException("InvalidMove");
+            send("MOVE;" + xs + ";" + ys + ";" + xe + ";" + ye);
+        }
     }
 
     /**
-     * Function send "Start" (from game lobby) request to server
-     *
-     * @throws IOException
+     * Function send "START" (game) request to server
      */
-    public void start(){
+    public void sendstart(){
+        send("START");
+    }
 
+    /**
+     * Function send "DONE" move to server
+     */
+    public void senddone(){
+        send("DONE");
+    }
+
+    /**
+     * Function to sending messages to server
+     * @param msg String message
+     */
+    public void send(String msg){
+        try {
+            dos.writeUTF(msg);
+            dos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Function call to add bot to game;
+     */
+    public void sendaddbot(){
+        //TODO implement
+    }
+
+    public void castcolor(String c){
+        //TODO implement casting to Color
     }
     public static void main(String args[]) throws IOException {
         Client c = new Client();
