@@ -6,13 +6,13 @@ package Trylma;
  *
  * @author Michał Budnik
  */
-class Board {
+public class Board {
     int height = 17;
     int width = 25;
     //Length 4 - 10 pawns, length 3 - 6 pawns, length 2 - 3 pawns
     private int lengthOfPawnFields = 4;
 
-    Fields board[][] = new Fields[width][height];
+    public Fields[][] board = new Fields[width][height];
 
     Board(int NoPlayers, int sets) {
         setupBoard();
