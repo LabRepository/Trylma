@@ -25,7 +25,7 @@ public class Game {
                 throw new RuntimeException("Move not legal!");
             }
         } else {
-            throw new RuntimeException("Trying to move an empty field");
+            throw new RuntimeException("Trying to move a field which is not a pawn!");
         }
     }
 
