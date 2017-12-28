@@ -5,6 +5,7 @@ import static java.lang.Math.abs;
 public class Game {
     /*private*/ Board board;
     private boolean isMoveLegal = false;
+    private int numberOfPawns = 10;
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
     private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
 
@@ -13,40 +14,63 @@ public class Game {
     }
 
     void moving(int startX, int startY, int goalX, int goalY){
-        if (legalmove(startX, startY, goalX, goalY)){
+        if (legalMove(startX, startY, goalX, goalY)){
             board.board[goalX][goalY].setState(board.board[startX][startY].getState());
             board.board[startX][startY].setState("EMPTY");
-            checkWin(goalX, goalY);
+            if (!board.board[goalX][goalY].getAtFinish()) {
+                setWin(goalX, goalY);
+            }
         } else {
             throw new RuntimeException("Move not legal!");
         }
     }
-
-    private void checkWin(int x, int y){
-        switch (board.board[x][y].getState()) {
-            case "BLACKPAWN":
-                board.board[x][y].setAtFinish(blackWinArea(x, y));
-                break;
-            case "REDPAWN":
-                board.board[x][y].setAtFinish(redWinArea(x, y));
-                break;
-            case "BLUEPAWN":
-                board.board[x][y].setAtFinish(blueWinArea(x, y));
-                break;
-            case "WHITEPAWN":
-                board.board[x][y].setAtFinish(whiteWinArea(x, y));
-                break;
-            case "GREENPAWN":
-                board.board[x][y].setAtFinish(greenWinArea(x, y));
-                break;
-            case "YELLOWPAWN":
-                board.board[x][y].setAtFinish(yellowWinArea(x, y));
-                break;
-
+    
+    private void checkEnd(){
+        for (int i = 0; i<6; i++){
+            if (win[i] == numberOfPawns){
+                throw new RuntimeException(winColour[i] + " wins");
+                win[i] = -1;
+            }
         }
     }
 
-    private boolean legalmove(int startX, int startY, int goalX, int goalY) {
+    private void setWin(int x, int y){
+        switch (board.board[x][y].getState()) {
+            case "BLACKPAWN":
+                if (blackWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[0]+=1;
+                }
+                break;
+            case "REDPAWN":
+                if (redWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[1]+=1;
+                }
+            case "BLUEPAWN":
+                if (blueWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[2]+=1;
+                }
+            case "WHITEPAWN":
+                if (whiteWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[3]+=1;
+                }
+            case "GREENPAWN":
+                if (greenWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[4]+=1;
+                }
+            case "YELLOWPAWN":
+                if (yellowWinArea(x, y)) {
+                    board.board[x][y].setAtFinish(true);
+                    win[5]+=1;
+                }
+        }
+    }
+
+    private boolean legalMove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
         if (abs(goalX-startX)>2 || abs(goalY-startY)>1) {
             checkJump(startX, startY, goalX, goalY);
