@@ -12,7 +12,7 @@ public class testingBoard {
         try {
             Board board = new Board(6, 3);
         } catch (RuntimeException r) {
-            assertEquals("numberOfSetsUnavailableForFIVEPlayers", r.getMessage());
+            assertEquals("numberOfSetsUnavailableForSIXPlayers", r.getMessage());
         }
     }
 

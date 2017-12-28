@@ -7,12 +7,12 @@ package Trylma;
  * @author Michał Budnik
  */
 class Board {
-    private int height = 17;
-    private int width = 25;
+    int height = 17;
+    int width = 25;
     //Length 4 - 10 pawns, length 3 - 6 pawns, length 2 - 3 pawns
     private int lengthOfPawnFields = 4;
 
-    Fields board[][] = new Fields[height][width];
+    Fields board[][] = new Fields[width][height];
 
     Board(int NoPlayers, int sets) {
         setupBoard();
@@ -41,8 +41,8 @@ class Board {
      * Initialize fields as "BLOCKED", then call methods to appropriately open playable fields.
      */
     private void setupBoard() {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 board[i][j] = new Fields("BLOCKED");
             }
         }
@@ -91,8 +91,8 @@ class Board {
      */
     private void constructLine(int mid, int row, int i, String state) {
         try {
-            board[row][mid + i].setState(state);
-            board[row][mid - i].setState(state);
+            board[mid + i][row].setState(state);
+            board[mid - i][row].setState(state);
         } catch (RuntimeException r) {
             r.getMessage();
         }
@@ -141,7 +141,7 @@ class Board {
                 if (sets == 1) {
                     initiateSixColors();
                 } else {
-                    throw new RuntimeException("numberOfSetsUnavailableForFIVEPlayers");
+                    throw new RuntimeException("numberOfSetsUnavailableForSIXPlayers");
                 }
                 break;
             default:

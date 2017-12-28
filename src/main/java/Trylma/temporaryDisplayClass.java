@@ -3,11 +3,12 @@ package Trylma;
 public class temporaryDisplayClass {
     public static void main(String[] args) {
         try {
-            Board board = new Board(2, 1);
+            Game game = new Game(6, 1);
+            Board board = game.board;
             for (int i = 0; i < 17; i++) {
                 for (int j = 0; j < 25; j++) {
                     char sign;
-                    switch (board.board[i][j].getState()) {
+                    switch (board.board[j][i].getState()) {
                         case ("BLOCKED"):
                             sign = ' ';
                             break;
