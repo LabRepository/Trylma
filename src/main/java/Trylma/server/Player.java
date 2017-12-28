@@ -51,7 +51,7 @@ public class Player extends Thread implements AbstractPlayer {
                 if (received.startsWith("JOIN")) {
                     //TODO implement this when server can handle more than 1 game
                 } else if (received.startsWith("MOVE")) {
-                    //TODO
+                        move(received);
                 } else if (received.startsWith("QUIT")) {
                     //TODO implement this when server can handle more than 1 game
                 } else if (received.startsWith("START")) {
@@ -63,7 +63,7 @@ public class Player extends Thread implements AbstractPlayer {
             } catch (IOException e) {
                 try {
                     s.close();
-                    System.out.println(id + " Player Connection lost!");
+                    System.out.println(id + " Player died!");
                     isloggedin = false;
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -111,7 +111,15 @@ public class Player extends Thread implements AbstractPlayer {
     }
 
     public void move(String received){
-        //TODO implement method
+        StringTokenizer st = new StringTokenizer(received,";");
+        st.nextToken();
+        int startX = Integer.parseInt(st.nextToken());
+        int startY = Integer.parseInt(st.nextToken());
+        int goalX = Integer.parseInt(st.nextToken());
+        int goalY = Integer.parseInt(st.nextToken());
+
+
+
     }
 
     public void setGame(Game game) {

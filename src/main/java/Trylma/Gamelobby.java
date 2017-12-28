@@ -44,7 +44,7 @@ public class Gamelobby {
     public void removebot(){
 
             if (NoPlayers <= 6) {
-                //    TODO     players.add(new Bot);
+
             } else throw new RuntimeException("Youcantaddbot");
 
     }
@@ -73,9 +73,7 @@ public class Gamelobby {
             default:
                 throw new RuntimeException("numberOfPlayersIncorrect");
         }
-        for (Player p: players) {
-                p.setGame(game);
-        }
+
         respond("START");
     }
 
