@@ -1,6 +1,7 @@
 package Trylma.server;
 
 import Trylma.Color;
+import Trylma.Game;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,6 +21,7 @@ public class Player extends Thread implements AbstractPlayer {
     private DataOutputStream os;
     Socket s;
     boolean isloggedin;
+    private Game game;
 
 
     public Player(Socket s, int id) {
@@ -49,23 +51,14 @@ public class Player extends Thread implements AbstractPlayer {
                 if (received.startsWith("JOIN")) {
                     //TODO implement this when server can handle more than 1 game
                 } else if (received.startsWith("MOVE")) {
-                    move(received);
+                    //TODO
                 } else if (received.startsWith("QUIT")) {
-                    System.out.print(id + "QUIT");
+                    //TODO implement this when server can handle more than 1 game
                 } else if (received.startsWith("START")) {
-                    System.out.print(id + "START");
+                    Server.gamelobby.rungame();
                 } else if (received.startsWith("BOT")) {
                     System.out.print(id + "BOT");
-                } else if (received.startsWith("TEST")){
-                    try {
-                        Server.gamelobby.addplayer(this);
-                        System.out.println(Server.gamelobby.check());
-                    } catch (RuntimeException e) {
-                        System.out.println(id + " : " + e.getMessage());
-                    }
                 }
-
-
 
             } catch (IOException e) {
                 try {
@@ -118,28 +111,10 @@ public class Player extends Thread implements AbstractPlayer {
     }
 
     public void move(String received){
-//        if (color == Server.gamelobby.game.getCurrentplayercolor()) { //TODO THIS MOMENT Doesn't work
-//            StringTokenizer st = new StringTokenizer(received, ";");
-//            st.nextToken();
-//            System.out.print(st.nextToken());
-//            System.out.print(st.nextToken());
-//            int startX = Integer.parseInt(st.nextToken());
-//            int startY = Integer.parseInt(st.nextToken());
-//            int goalX = Integer.parseInt(st.nextToken());
-//            int goalY = Integer.parseInt(st.nextToken());
-
-//            if (Server.gamelobby.game.legalmove(startX,startY,goalX,goalY)) {
-//  //              Server.gamelobby.game.move(startX, startY, goalX, goalY);
-//                //TODO Write to all players in game (recieved) as move
-//            } else {
-//                try {
-//                    os.writeUTF("Wrong Move");
-//                    os.flush();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
+        //TODO implement method
     }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }

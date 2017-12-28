@@ -7,8 +7,6 @@ import static java.lang.Math.abs;
 public class Game {
     /*private*/ Board board;
     private ArrayList<ArrayList<Tuple>> paths;
-    private Color currentplayer;
-    //TODO implement player queue
 
 
 
@@ -73,7 +71,7 @@ public class Game {
         //throw new RuntimeException("Move not possible!");
     }
 
-    public Color getCurrentplayercolor() {
-        return currentplayer;
+    private void hasWinner(){
+        //TODO
     }
 }
