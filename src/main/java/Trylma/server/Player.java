@@ -121,7 +121,6 @@ public class Player extends Thread implements AbstractPlayer {
         int goalY = Integer.parseInt(st.nextToken());
         try {
             Server.gamelobby.game.moving(startX, startY, goalX, goalY);
-            Server.gamelobby.respond(received);
         } catch (RuntimeException e){
             send("WMOVE");
         }

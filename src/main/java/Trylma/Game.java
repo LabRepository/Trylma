@@ -13,7 +13,7 @@ public class Game {
         board = new Board(players, sets);
     }
 
-    void moving(int startX, int startY, int goalX, int goalY){
+    public void moving(int startX, int startY, int goalX, int goalY){
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
                 board.board[goalX][goalY].setState(board.board[startX][startY].getState());
