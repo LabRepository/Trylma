@@ -1,11 +1,9 @@
 package Trylma;
 
-import java.util.ArrayList;
-
 import static java.lang.Math.abs;
 
 public class Game {
-    /*private*/ Board board;
+    /*private*/ public Board board;
     private boolean isMoveLegal = false;
     private int numberOfPawns = 10;
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
@@ -36,7 +34,7 @@ public class Game {
         }
     }
 
-    String checkEnd() {
+    public String checkEnd() {
         for (int i = 0; i < 6; i++) {
             if (win[i] == numberOfPawns) {
                 win[i] = -1;
