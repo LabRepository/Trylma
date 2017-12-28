@@ -1,5 +1,7 @@
 package Trylma;
 
+import java.util.ArrayList;
+
 import static java.lang.Math.abs;
 
 public class Game {
@@ -13,7 +15,12 @@ public class Game {
         board = new Board(players, sets);
     }
 
-    public void moving(int startX, int startY, int goalX, int goalY){
+    /*public void moveBot(String color) {
+        int[] result = bot(color + "PAWN");
+        moving(result[0], result[1], result[2], result[3]);
+    }*/
+
+    public void moving(int startX, int startY, int goalX, int goalY) {
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
                 board.board[goalX][goalY].setState(board.board[startX][startY].getState());
@@ -29,55 +36,55 @@ public class Game {
         }
     }
 
-    String checkEnd(){
-        for (int i = 0; i<6; i++) {
+    String checkEnd() {
+        for (int i = 0; i < 6; i++) {
             if (win[i] == numberOfPawns) {
                 win[i] = -1;
                 return winColour[i];
             }
         }
-            return "NONE";
+        return "NONE";
     }
 
-    private void setWin(int x, int y){
+    private void setWin(int x, int y) {
         switch (board.board[x][y].getState()) {
             case "BLACKPAWN":
                 if (blackWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[0]+=1;
+                    win[0] += 1;
                 }
                 break;
             case "REDPAWN":
                 if (redWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[1]+=1;
+                    win[1] += 1;
                 }
             case "BLUEPAWN":
                 if (blueWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[2]+=1;
+                    win[2] += 1;
                 }
             case "WHITEPAWN":
                 if (whiteWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[3]+=1;
+                    win[3] += 1;
                 }
             case "GREENPAWN":
                 if (greenWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[4]+=1;
+                    win[4] += 1;
                 }
             case "YELLOWPAWN":
                 if (yellowWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
-                    win[5]+=1;
+                    win[5] += 1;
                 }
         }
     }
 
     boolean legalMove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
-        if (abs(goalX-startX)>2 || abs(goalY-startY)>1) {
+        if (abs(goalX - startX) > 2 || abs(goalY - startY) > 1) {
             checkJump(startX, startY, goalX, goalY);
         } else if (board.board[goalX][goalY].getState().equals("EMPTY")) {
             isMoveLegal = true;
@@ -137,22 +144,44 @@ public class Game {
         throw new RuntimeException("Move not legal!");
     }
 
-    private boolean blueWinArea(int x, int y){
-        return((x<5 && 3<y && y<8) || (x<7 && 3<y && y<6));
+    private boolean blueWinArea(int x, int y) {
+        return ((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6));
     }
-    private boolean whiteWinArea(int x, int y){
-        return(y<4);
+
+    private boolean whiteWinArea(int x, int y) {
+        return (y < 4);
     }
-    private boolean greenWinArea(int x, int y){
-        return((x>19 && 3<y && y<8) || (x>17 && 3<y && y<6));
+
+    private boolean greenWinArea(int x, int y) {
+        return ((x > 19 && 3 < y && y < 8) || (x > 17 && 3 < y && y < 6));
     }
-    private boolean yellowWinArea(int x, int y){
-        return((x>19 && 8<y && y<13) || (x>17 && 10<y && y<13));
+
+    private boolean yellowWinArea(int x, int y) {
+        return ((x > 19 && 8 < y && y < 13) || (x > 17 && 10 < y && y < 13));
     }
-    private boolean blackWinArea(int x, int y){
-        return(y>12);
+
+    private boolean blackWinArea(int x, int y) {
+        return (y > 12);
     }
-    private boolean redWinArea(int x, int y){
-        return((x<5 && 8<y && y<13) || (x<7 && 10<y && y<13));
+
+    private boolean redWinArea(int x, int y) {
+        return ((x < 5 && 8 < y && y < 13) || (x < 7 && 10 < y && y < 13));
     }
+
+    /*private int[] bot(String pawnColor){
+        int[] resultVector;
+        ArrayList<ArrayList<Integer>> possibleRoutes;
+
+        for (int i = 0; i < board.width; i++){
+            for (int j = 0; j< board.height; j++){
+                if(board.board[i][j].getState().equals(pawnColor)){
+                    //check
+                }
+            }
+        }
+
+
+        return resultVector;
+    }
+}*/
 }
