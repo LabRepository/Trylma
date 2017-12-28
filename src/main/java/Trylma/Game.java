@@ -1,7 +1,6 @@
 package Trylma;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.sqrt;
 
 public class Game {
     /*private*/ Board board;
@@ -10,20 +9,23 @@ public class Game {
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
     private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
 
-
     Game(int players, int sets) {
         board = new Board(players, sets);
     }
 
-    public void moving(int startX, int startY, int goalX, int goalY){
-        if (legalMove(startX, startY, goalX, goalY)){
-            board.board[goalX][goalY].setState(board.board[startX][startY].getState());
-            board.board[startX][startY].setState("EMPTY");
-            if (!board.board[goalX][goalY].getAtFinish()) {
-                setWin(goalX, goalY);
+    void moving(int startX, int startY, int goalX, int goalY){
+        if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
+            if (legalMove(startX, startY, goalX, goalY)) {
+                board.board[goalX][goalY].setState(board.board[startX][startY].getState());
+                board.board[startX][startY].setState("EMPTY");
+                if (!board.board[goalX][goalY].getAtFinish()) {
+                    setWin(goalX, goalY);
+                }
+            } else {
+                throw new RuntimeException("Move not legal!");
             }
         } else {
-            throw new RuntimeException("Move not legal!");
+            throw new RuntimeException("Trying to move a field which is not a pawn!");
         }
     }
 
@@ -73,7 +75,7 @@ public class Game {
         }
     }
 
-    private boolean legalMove(int startX, int startY, int goalX, int goalY) {
+    boolean legalMove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
         if (abs(goalX-startX)>2 || abs(goalY-startY)>1) {
             checkJump(startX, startY, goalX, goalY);

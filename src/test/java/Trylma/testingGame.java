@@ -8,11 +8,11 @@ public class testingGame {
 
     @Test
     public void movingAlgorithmWorks() {
-        //TODO repair test
         try {
-            Game game = new Game(2, 1);
-            game.moving(9, 13, 10, 12);
-            game.moving(9,13,10,12);
+            Game game = new Game(6, 1);
+            game.board.board[12][12].setState("BLACKPAWN");
+            game.board.board[10][12].setState("BLACKPAWN");
+            assertEquals(true, game.legalMove(12, 12, 8, 12));
         } catch (RuntimeException r) {
             System.out.print(r.getMessage());
         }
