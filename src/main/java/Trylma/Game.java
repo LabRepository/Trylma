@@ -14,14 +14,18 @@ public class Game {
     }
 
     void moving(int startX, int startY, int goalX, int goalY){
-        if (legalMove(startX, startY, goalX, goalY)){
-            board.board[goalX][goalY].setState(board.board[startX][startY].getState());
-            board.board[startX][startY].setState("EMPTY");
-            if (!board.board[goalX][goalY].getAtFinish()) {
-                setWin(goalX, goalY);
+        if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
+            if (legalMove(startX, startY, goalX, goalY)) {
+                board.board[goalX][goalY].setState(board.board[startX][startY].getState());
+                board.board[startX][startY].setState("EMPTY");
+                if (!board.board[goalX][goalY].getAtFinish()) {
+                    setWin(goalX, goalY);
+                }
+            } else {
+                throw new RuntimeException("Move not legal!");
             }
         } else {
-            throw new RuntimeException("Move not legal!");
+            throw new RuntimeException("Trying to move an empty field");
         }
     }
 
