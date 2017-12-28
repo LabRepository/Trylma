@@ -24,14 +24,15 @@ public class Game {
             throw new RuntimeException("Move not legal!");
         }
     }
-    
-    private void checkEnd(){
-        for (int i = 0; i<6; i++){
-            if (win[i] == numberOfPawns){
-                throw new RuntimeException(winColour[i] + " wins");
+
+    String checkEnd(){
+        for (int i = 0; i<6; i++) {
+            if (win[i] == numberOfPawns) {
                 win[i] = -1;
+                return winColour[i];
             }
         }
+            return "NONE";
     }
 
     private void setWin(int x, int y){
