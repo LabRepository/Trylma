@@ -34,7 +34,7 @@ public class Server {
      */
     public volatile int NoPlayers = 0;
     /**
-     *
+     * Limit Player on server
      */
     private static final int PLAYER_LIMIT = 6;
 
