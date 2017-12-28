@@ -15,6 +15,7 @@ class Fields {
         private ArrayList<String> allowedStates = new ArrayList<>(Arrays.asList("BLOCKED", "EMPTY", "BLACKPAWN", "WHITEPAWN",
                 "YELLOWPAWN", "REDPAWN", "GREENPAWN", "BLUEPAWN"));
         private String state;
+        private boolean atFinish = false;
 
         Fields(String beginningState) {
                 this.state = beginningState;
@@ -22,7 +23,6 @@ class Fields {
 
         /**
          * setState checks if upcoming state is in an array of allowedStates.
-         *
          * @throws  RuntimeException if provided state is incorrect, 0 if state changed successfully.
          */
         void setState(String newState) {
@@ -37,5 +37,12 @@ class Fields {
          */
         String getState() {
                 return this.state;
+        }
+
+        void setAtFinish(boolean state){
+                atFinish = state;
+        }
+        boolean getAtFinish(){
+                return this.atFinish;
         }
 }

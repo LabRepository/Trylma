@@ -5,6 +5,8 @@ import static java.lang.Math.abs;
 public class Game {
     /*private*/ Board board;
     private boolean isMoveLegal = false;
+    private int[] win = new int[]{0, 0, 0, 0, 0, 0};
+    private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
 
 
     Game(int players, int sets) {
@@ -18,6 +20,10 @@ public class Game {
         } else {
             throw new RuntimeException("Move not legal!");
         }
+    }
+
+    void checkWin(){
+
     }
 
     boolean legalmove(int startX, int startY, int goalX, int goalY) {
