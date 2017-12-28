@@ -10,7 +10,7 @@ import java.util.Arrays;
  *
  * @author Michał Budnik
  */
-class Fields {
+public class Fields {
         //ArrayList which contains the only possible states for a field.
         private ArrayList<String> allowedStates = new ArrayList<>(Arrays.asList("BLOCKED", "EMPTY", "BLACKPAWN", "WHITEPAWN",
                 "YELLOWPAWN", "REDPAWN", "GREENPAWN", "BLUEPAWN"));
@@ -35,7 +35,7 @@ class Fields {
         /**
          * @return Current state.
          */
-        String getState() {
+        public String getState() {
                 return this.state;
         }
 
