@@ -1,9 +1,11 @@
 package Trylma.server;
 
-import Trylma.Color;
+import Trylma.*;
 import Trylma.Game;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
@@ -21,7 +23,6 @@ public class Player extends Thread implements AbstractPlayer {
     private DataOutputStream os;
     Socket s;
     boolean isloggedin;
-    private Game game;
 
 
     public Player(Socket s, int id) {
@@ -57,7 +58,7 @@ public class Player extends Thread implements AbstractPlayer {
                 } else if (received.startsWith("START")) {
                     Server.gamelobby.rungame();
                 } else if (received.startsWith("BOT")) {
-                    System.out.print(id + "BOT");
+                    Server.gamelobby.addbot();
                 }
 
             } catch (IOException e) {
@@ -105,24 +106,25 @@ public class Player extends Thread implements AbstractPlayer {
             os.writeUTF(msg);
             os.flush();
         } catch (IOException e){
-            e.printStackTrace();
+            Server.gamelobby.exit(this);
         }
 
     }
 
     public void move(String received){
+        //TODO add checking game queue
         StringTokenizer st = new StringTokenizer(received,";");
         st.nextToken();
         int startX = Integer.parseInt(st.nextToken());
         int startY = Integer.parseInt(st.nextToken());
         int goalX = Integer.parseInt(st.nextToken());
         int goalY = Integer.parseInt(st.nextToken());
-
-
-
+        try {
+            Server.gamelobby.game.moving(startX, startY, goalX, goalY);
+            Server.gamelobby.respond(received);
+        } catch (RuntimeException e){
+            send("WMOVE");
+        }
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
 }

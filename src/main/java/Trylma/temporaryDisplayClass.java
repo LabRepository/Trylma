@@ -3,7 +3,7 @@ package Trylma;
 public class temporaryDisplayClass {
     public static void main(String[] args) {
         try {
-            Board board = new Board(3, 1);
+            Board board = new Board(2, 1);
             for (int i = 0; i < 17; i++) {
                 for (int j = 0; j < 25; j++) {
                     char sign;

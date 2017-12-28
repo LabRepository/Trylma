@@ -14,7 +14,6 @@ public class Gamelobby {
     private int NoBots = 0;
     public Game game;
 
-    //TODO ADD game start and write tests
     public Gamelobby() {
     }
 
@@ -50,31 +49,32 @@ public class Gamelobby {
     }
 
 
-//    public void exit(Player player) {
-//        players.remove(player);
-//        NoPlayers--;
-//    }
+    public void exit(Player player) {
+        players.remove(player);
+        NoPlayers--;
+    }
 
     //this is super basic version and i don't extend very much
     public void rungame() {
-        switch (NoPlayers+NoBots) {
+        int gamers = NoBots+NoPlayers;
+        switch (gamers) {
             case 2:
-                game = new Game(NoPlayers,1);
+                game = new Game(gamers,1);
                 break;
             case 3:
-                game = new Game(NoPlayers,1);
+                game = new Game(gamers,1);
                 break;
             case 4:
-                game = new Game(NoPlayers,1);
+                game = new Game(gamers,1);
                 break;
             case 6:
-                game = new Game(NoPlayers,1);
+                game = new Game(gamers,1);
                 break;
             default:
                 throw new RuntimeException("numberOfPlayersIncorrect");
         }
 
-        respond("START");
+        respond("START"+gamers);
     }
 
 
@@ -82,7 +82,7 @@ public class Gamelobby {
 //        return gameid;
 //    }
 
-    private void respond(String respond){
+    public void respond(String respond){
         for (Player p: players) {
             p.send(respond);
         }
