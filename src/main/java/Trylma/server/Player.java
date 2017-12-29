@@ -101,8 +101,10 @@ public class Player extends Thread implements AbstractPlayer {
             Server.gamelobby.rungame();
         } else if (received.startsWith("BOT")) {
             Server.gamelobby.addbot();
-        } else if (received.startsWith("DONE") && Server.gamelobby.isturn(color)) {
-            Server.gamelobby.moveturn(color);
+        } else if (received.startsWith("DONE") && Server.gamelobby.getstate()) {
+            if(Server.gamelobby.isturn(color)) {
+                Server.gamelobby.moveturn(color);
+            }
         }
     }
 

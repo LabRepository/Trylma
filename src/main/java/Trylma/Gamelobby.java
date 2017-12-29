@@ -174,12 +174,17 @@ public class Gamelobby {
     }
 
     public boolean isturn(Color c){
+
         if(turn.getFirst() == c){
             return true;
         } return false;
     }
 
     public void moveturn(Color c){
+        if(!isrunning)
+        {
+            return;
+        }
         turn.remove(c);
         turn.addLast(c);
         c = turn.getFirst();
@@ -189,7 +194,6 @@ public class Gamelobby {
     public void restart(){
         game = null;
         isrunning = false;
-        rungame();
         respond("RESTART");
     }
 

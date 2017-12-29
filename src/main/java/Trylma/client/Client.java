@@ -110,8 +110,6 @@ public class Client {
         sendMessage.start();
         //TODO END DELETE
 
-
-        //TODO implement input handling to be continued
         createreadthread();
         readMessage.start();
 
@@ -122,20 +120,26 @@ public class Client {
 //    GUI
 /////////////////////////////////////////////////////
     private JFrame frame = new JFrame("Chinese Checkers");
-    private JPanel panel = new JPanel(new BorderLayout());
+    private JPanel panel = new JPanel(new GridLayout(1,2));
     private JPanel functions = new JPanel(new FlowLayout());
-    private JPanel gameboard = new JPanel();
     private JPanel east = new JPanel();
     private JLabel yourcolor = new JLabel("Color");
     private JLabel serverinfo = new JLabel("Info");
     private JLabel size = new JLabel("Size");
     private JButton start = new JButton("Start");
     private JButton done = new JButton("DONE");
+    private BoardGUI board;
+
+
+
+
+
+
+
 
     private void GUImaker(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(960, 480);
-
+        frame.setLayout(new GridLayout(1,2));
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendstart();
@@ -149,18 +153,15 @@ public class Client {
         } );
 
         frame.add(panel);
-        panel.add(east,BorderLayout.EAST);
-        panel.add(gameboard,BorderLayout.CENTER);
+        panel.add(functions);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         yourcolor.setHorizontalAlignment(SwingConstants.CENTER);
         yourcolor.setVerticalAlignment(SwingConstants.CENTER);
         serverinfo.setHorizontalAlignment(SwingConstants.CENTER);
         serverinfo.setVerticalAlignment(SwingConstants.CENTER);
         size.setHorizontalAlignment(SwingConstants.CENTER);
         size.setVerticalAlignment(SwingConstants.CENTER);
-        gameboard.setBackground(java.awt.Color.BLACK);
 
-        east.setSize(new Dimension(400,480));
-        east.add(functions);
         functions.setLayout(new BoxLayout(functions, BoxLayout.PAGE_AXIS));
         functions.add(hello);
         functions.add(yourcolor);
@@ -173,6 +174,11 @@ public class Client {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+//////////////////////////////////////////////////////////////////////////
+//    GUI
+/////////////////////////////////////////////////////
+
+
     /**
      * Creates readMessage Thread with inputhandler inside;
      */
@@ -197,7 +203,6 @@ public class Client {
         });
     }
 
-    public void  test(){}
     /**
      * TODO DELETE THIS When GUI would be implemented
      */
@@ -236,6 +241,8 @@ public class Client {
                 gamesize = Integer.parseInt(st.nextToken());
                 if(gamesize != null) {
                     size.setText("Game size: " + gamesize.toString());
+                    board = new BoardGUI(gamesize,1);
+                    frame.add(board);
                 }
                 //TODO implement game start on client side
             } else if(msg.startsWith("Wrng")){
@@ -254,6 +261,7 @@ public class Client {
                 int goalY = Integer.parseInt(st.nextToken());
                 //TODO implement move on client side
             } else if(msg.startsWith("RESTART")){
+                frame.remove(board);
                 serverinfo.setText("RESTART!");
                 size.setText("Size  ");
             } else if(msg.startsWith("TURN")){
@@ -391,7 +399,6 @@ public class Client {
         }
     }
 
-    //TODO delete this when GUI would be implemented
     public static void main(String args[]) throws IOException {
         Client c = new Client();
     }
