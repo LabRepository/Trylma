@@ -1,7 +1,12 @@
 package Trylma.client;
 
 import Trylma.Color;
+import com.sun.java.accessibility.util.GUIInitializedListener;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +19,7 @@ import java.util.StringTokenizer;
 
 /**
  * Basic client version (can handle inputs and send requests to server)
+ * @author Jakub Czyszczonik
  */
 public class Client {
     /**
@@ -70,17 +76,24 @@ public class Client {
     /**
      * Contains number of players in current Game
      */
-    private Integer gamesize;
+    Integer gamesize;
     /**
      * Contains client current Color.
      */
     Color color;
+    /**
+     *
+     */
+    JLabel hello = new JLabel("Welcome in our Trylma Client. Enjoy!");
     private Scanner scn = new Scanner(System.in);
 
     /**
      * Constructor makes new Data Input and Output Streams and Starts readMessage Thread for
      * reading messages from server
      */
+
+
+
     Client() {
         try {
             ip = InetAddress.getByName("localhost");
@@ -101,9 +114,65 @@ public class Client {
         //TODO implement input handling to be continued
         createreadthread();
         readMessage.start();
+
+        GUImaker();
+
     }
+//////////////////////////////////////////////////////////////////////////
+//    GUI
+/////////////////////////////////////////////////////
+    private JFrame frame = new JFrame("Chinese Checkers");
+    private JPanel panel = new JPanel(new BorderLayout());
+    private JPanel functions = new JPanel(new FlowLayout());
+    private JPanel gameboard = new JPanel();
+    private JPanel east = new JPanel();
+    private JLabel yourcolor = new JLabel("Color");
+    private JLabel serverinfo = new JLabel("Info");
+    private JLabel size = new JLabel("Size");
+    private JButton start = new JButton("Start");
+    private JButton done = new JButton("DONE");
 
+    private void GUImaker(){
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(960, 480);
 
+        start.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendstart();
+            }
+        } );
+
+        done.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                senddone();
+            }
+        } );
+
+        frame.add(panel);
+        panel.add(east,BorderLayout.EAST);
+        panel.add(gameboard,BorderLayout.CENTER);
+        yourcolor.setHorizontalAlignment(SwingConstants.CENTER);
+        yourcolor.setVerticalAlignment(SwingConstants.CENTER);
+        serverinfo.setHorizontalAlignment(SwingConstants.CENTER);
+        serverinfo.setVerticalAlignment(SwingConstants.CENTER);
+        size.setHorizontalAlignment(SwingConstants.CENTER);
+        size.setVerticalAlignment(SwingConstants.CENTER);
+        gameboard.setBackground(java.awt.Color.BLACK);
+
+        east.setSize(new Dimension(400,480));
+        east.add(functions);
+        functions.setLayout(new BoxLayout(functions, BoxLayout.PAGE_AXIS));
+        functions.add(hello);
+        functions.add(yourcolor);
+        functions.add(serverinfo);
+        functions.add(size);
+        functions.add(start);
+        functions.add(done);
+
+        frame.setResizable(true);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
     /**
      * Creates readMessage Thread with inputhandler inside;
      */
@@ -128,6 +197,7 @@ public class Client {
         });
     }
 
+    public void  test(){}
     /**
      * TODO DELETE THIS When GUI would be implemented
      */
@@ -164,11 +234,17 @@ public class Client {
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 gamesize = Integer.parseInt(st.nextToken());
+                if(gamesize != null) {
+                    size.setText("Game size: " + gamesize.toString());
+                }
                 //TODO implement game start on client side
             } else if(msg.startsWith("Wrng")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 info = st.nextToken();
+                if(info != null){
+                    serverinfo.setText(info);
+                }
             } else if(msg.startsWith("MOVE")){
                 StringTokenizer st = new StringTokenizer(msg,";");
                 st.nextToken();
@@ -178,22 +254,25 @@ public class Client {
                 int goalY = Integer.parseInt(st.nextToken());
                 //TODO implement move on client side
             } else if(msg.startsWith("RESTART")){
-                //TODO implement game restart
+                serverinfo.setText("RESTART!");
+                size.setText("Size  ");
             } else if(msg.startsWith("TURN")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 turn = st.nextToken();
-                turn = turn + " turn";
+                turn = turn + " turn  ";
+                serverinfo.setText(turn);
             } else if(msg.startsWith("WIN")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 info = st.nextToken() + " Wins!";
-                //TODO ENDGAME IMPLEMENT (back to start game...  etc)
+                serverinfo.setText(info);
             } else if(msg.startsWith("COLOR")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 String color =  st.nextToken();
                 castcolor(color);
+                yourcolor.setText("Your Color: "+color.toString()+"  ");
             }
 
         }

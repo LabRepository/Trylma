@@ -1,8 +1,7 @@
 package Trylma.server;
 
 /**
- * Interface of Player
- *
+ * Player interface
  * @author Jakub Czyszczonik
  */
 public interface AbstractPlayer {

@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
@@ -12,8 +13,6 @@ import java.util.StringTokenizer;
  *
  * @author Jakub Czyszczonik
  */
-
-
 public class Player extends Thread implements AbstractPlayer {
     /**
      * Player ID
@@ -26,7 +25,7 @@ public class Player extends Thread implements AbstractPlayer {
     /**
      * Player State
      */
-    boolean isloggedin;
+    private boolean isloggedin;
 
 
     /**
@@ -37,7 +36,7 @@ public class Player extends Thread implements AbstractPlayer {
      * @see DataInputStream
      * @see Socket
      */
-    public Player(Socket s, int id) {
+    Player(Socket s, int id) {
 
         this.s = s;
         this.isloggedin = true;
@@ -60,35 +59,20 @@ public class Player extends Thread implements AbstractPlayer {
         String received;
         while (isloggedin) {
             try {
-
                 received = is.readUTF();
                 System.out.println(id + ": " + received);
-                //TODO implement methods
-                if (received.startsWith("JOIN")) {
-                    //TODO implement this when server can handle more than 1 game
-                } else if (received.startsWith("MOVE")&& Server.gamelobby.getstate()) {
-                    if(Server.gamelobby.isturn(color)) {
-                        move(received);
-                    }
-                } else if (received.startsWith("QUIT")) {
-                    //TODO implement this when server can handle more than 1 game
-                } else if (received.startsWith("START")) {
-                    Server.gamelobby.rungame();
-                } else if (received.startsWith("BOT")) {
-                    Server.gamelobby.addbot();
-                } else if (received.startsWith("DONE") && Server.gamelobby.isturn(color)) {
-                    Server.gamelobby.moveturn(color);
-                }
-
+                inputhandler(received);
             } catch (IOException e) {
                 try {
                     s.close();
                     System.out.println(id + " Player died!");
                     isloggedin = false;
                     Server.gamelobby.exit(this);
+                    Server.exit(this);
                 } catch (IOException e1) {
                     e1.printStackTrace();
-                }            }
+                }
+            }
 
         }
         try {
@@ -100,6 +84,27 @@ public class Player extends Thread implements AbstractPlayer {
         }
     }
 
+    /**
+     * Parse and handle input from player
+     * @param received input
+     */
+    private void inputhandler(String received){
+        if (received.startsWith("JOIN")) {
+            //TODO implement this when server can handle more than 1 game
+        } else if (received.startsWith("MOVE")&& Server.gamelobby.getstate()) {
+            if(Server.gamelobby.isturn(color)) {
+                move(received);
+            }
+        } else if (received.startsWith("QUIT")) {
+            //TODO implement this when server can handle more than 1 game
+        } else if (received.startsWith("START")) {
+            Server.gamelobby.rungame();
+        } else if (received.startsWith("BOT")) {
+            Server.gamelobby.addbot();
+        } else if (received.startsWith("DONE") && Server.gamelobby.isturn(color)) {
+            Server.gamelobby.moveturn(color);
+        }
+    }
 
     @Override
     public void send(String msg){
@@ -120,7 +125,7 @@ public class Player extends Thread implements AbstractPlayer {
         int startY = Integer.parseInt(st.nextToken());
         int goalX = Integer.parseInt(st.nextToken());
         int goalY = Integer.parseInt(st.nextToken());
-        if(Server.gamelobby.game.board.board[startX][startY].getState() == color.toString()) {
+        if(Objects.equals(Server.gamelobby.game.board.board[startX][startY].getState(), color.toString())) {
                 try{
                     Server.gamelobby.game.moving(startX, startY, goalX, goalY);
                     Server.gamelobby.hasWinner();
@@ -134,17 +139,10 @@ public class Player extends Thread implements AbstractPlayer {
         }
     }
 
-    /**
-     * Color getter
-     * @see Color
-     */
-    public Color getColor() {
-        return color;
-    }
 
     /**
      * Color setter
-     * @param color
+     * @param color current color
      * @see Color
      */
     public void setColor(Color color) {
