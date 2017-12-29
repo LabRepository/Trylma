@@ -80,6 +80,9 @@ public class Gamelobby {
      * Function runs game, checks conditions and give players color
      */
     public void rungame() {
+        if(isrunning){
+            return;
+        }
         int gamers = NoBots+NoPlayers;
         switch (gamers) {
             case 2:
@@ -180,14 +183,14 @@ public class Gamelobby {
         turn.remove(c);
         turn.addLast(c);
         c = turn.getFirst();
-        respond("TURN"+c.toString());
+        respond("TURN;"+c.toString());
     }
 
     public void restart(){
-        respond("RESTART");
         game = null;
         isrunning = false;
         rungame();
+        respond("RESTART");
     }
 
     public boolean getstate(){

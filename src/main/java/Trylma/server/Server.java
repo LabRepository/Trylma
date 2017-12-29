@@ -1,13 +1,14 @@
 package Trylma.server;
 
 import Trylma.Gamelobby;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-// TODO ADD CONNECTION RESET HANDLING
-
+/**
+ * Basic Server Version to develop
+ * @author Jakub Czyszczonik
+ */
 public class Server {
     /**
      * Server Port
@@ -20,11 +21,11 @@ public class Server {
     /**
      * ArrayList of Players
      */
-    ArrayList<Player> players = new ArrayList<>();
+    static ArrayList<Player> players = new ArrayList<>();
     /**
      * Server Listener
      */
-    public ServerSocket listener;
+    private ServerSocket listener;
     /**
      * Game Lobby of current game
      */
@@ -32,7 +33,7 @@ public class Server {
     /**
      * Unique number of player
      */
-    public volatile int NoPlayers = 0;
+    private volatile int NoPlayers = 0;
     /**
      * Limit Player on server
      */
@@ -64,9 +65,9 @@ public class Server {
 
     /**
      * Starts listening socket and add new players to Array List.
-     * @throws IOException
+     * @throws IOException Socket connection can throw this
      */
-    public void listening() throws IOException {
+    private void listening() throws IOException {
         while (isrunning) {
             if(players.size() < PLAYER_LIMIT) {
                 players.add(new Player(listener.accept(),NoPlayers));
@@ -83,6 +84,9 @@ public class Server {
             }
 
         }
+    }
+    public static void exit(Player player){
+        players.remove(player);
     }
 
 }
