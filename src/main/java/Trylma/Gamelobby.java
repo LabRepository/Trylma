@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 public class Gamelobby {
     //TODO repair moving 9;3;13;3
+    //TODO ADD bots and handling bots
     final private int gameid = 0;
     private Board board;
     public ArrayList<Player> players = new ArrayList<>();
