@@ -10,24 +10,77 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-//TODO Write doc and tests
+//TODO Write tests and Develop
+
+/**
+ * Basic client version (can handle inputs and send requests to server)
+ */
 public class Client {
-    static DataInputStream dis;
-    static DataOutputStream dos;
-    final static int ServerPort = 12345;
-    Scanner scn = new Scanner(System.in);
-    InetAddress ip;
-    Socket s;
-    Thread sendMessage;
-    Thread readMessage;
-    String turn = "";
-    String info = "";
-    String msg;
-    StringTokenizer st;
-    Integer gamesize;
+    /**
+     * Data input stream
+     * @see DataInputStream
+     */
+    private static DataInputStream dis;
+    /**
+     * Data input stream
+     * @see DataOutputStream
+     */
+    private static DataOutputStream dos;
+    /**
+     * Default Server Port
+     */
+    private final static int ServerPort = 12345;
+    /**
+     * Server Ip Adres
+     * @see InetAddress
+     */
+    private InetAddress ip;
+    /**
+     * Socket
+     * @see Socket
+     */
+    private Socket s;
+    /**
+     * Thread for sending requests
+     * @see Thread
+     */
+    private Thread sendMessage;
+    /**
+     * Thread for reading responds from server
+     * @see Thread
+     */
+    private Thread readMessage;
+    /**
+     * Contains Turn Color
+     */
+    private String turn = "";
+    /**
+     * Contains Info from server
+     */
+    private String info = "";
+    /**
+     * Contains message from server
+     */
+    private String msg;
+    /**
+     * String Tokenizer for parsing messages from server
+     * @see StringTokenizer
+     */
+    private StringTokenizer st;
+    /**
+     * Contains number of players in current Game
+     */
+    private Integer gamesize;
+    /**
+     * Contains client current Color.
+     */
     Color color;
+    private Scanner scn = new Scanner(System.in);
 
-
+    /**
+     * Constructor makes new Data Input and Output Streams and Starts readMessage Thread for
+     * reading messages from server
+     */
     Client() {
         try {
             ip = InetAddress.getByName("localhost");
@@ -36,10 +89,49 @@ public class Client {
             dos = new DataOutputStream(s.getOutputStream());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("Server is Offline!");
             System.exit(1);
         }
-        //TODO delete this when gui would be implemented
+        //TODO DELETE this when gui would be implemented
+        createwritethread();
+        sendMessage.start();
+        //TODO END DELETE
+
+
+        //TODO implement input handling to be continued
+        createreadthread();
+        readMessage.start();
+    }
+
+
+    /**
+     * Creates readMessage Thread with inputhandler inside;
+     */
+    private void createreadthread(){
+        readMessage = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        msg = dis.readUTF();
+                    } catch (IOException e) {
+                        try {
+                            s.close();
+                            System.exit(1);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    inputhandler();
+                }
+            }
+        });
+    }
+
+    /**
+     * TODO DELETE THIS When GUI would be implemented
+     */
+    private void createwritethread(){
         sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -60,35 +152,12 @@ public class Client {
                 }
             }
         });
-        sendMessage.start();
-
-        //TODO implement input handling to be continued
-        // readMessage thread
-        readMessage = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        msg = dis.readUTF();
-                    } catch (IOException e) {
-                        try {
-                            s.close();
-                            System.exit(1);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    inputhandler();
-                }
-            }
-        });
-        readMessage.start();
     }
 
     /**
-     * Function for handling inupts
+     * Function parse inputs from server
+     * //TODO DEVELOP this function
      */
-
     private void inputhandler(){
         if(msg != null){
             if(msg.startsWith("START")){
@@ -124,11 +193,12 @@ public class Client {
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
                 String color =  st.nextToken();
-                castcolor(color); //TODO implement this function (below)
+                castcolor(color);
             }
 
         }
     }
+
     /**
      * Function send "JOIN" (to game lobby) request to server
      * Use this when server can handle more than 1 game
@@ -211,9 +281,38 @@ public class Client {
         //TODO implement
     }
 
+    /**
+     * This Function casts String to Trylma.Color
+     * @param c String to cast
+     * @see Trylma.Color
+     */
     public void castcolor(String c){
-        //TODO implement casting to Color
+        switch(c){
+            case "BLACKPAWN":
+                color = Color.BLACKPAWN;
+                break;
+            case "WHITEPAWN":
+                color = Color.WHITEPAWN;
+                break;
+            case "REDPAWN":
+                color = Color.REDPAWN;
+                break;
+            case "BLUEPAWN":
+                color = Color.BLUEPAWN;
+                break;
+            case "GREENPAWN":
+                color = Color.GREENPAWN;
+                break;
+            case "YELLOWPAWN":
+                color = Color.YELLOWPAWN;
+                break;
+            default:
+                System.out.print("Wrong Color!");
+                break;
+        }
     }
+
+    //TODO delete this when GUI would be implemented
     public static void main(String args[]) throws IOException {
         Client c = new Client();
     }
