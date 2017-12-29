@@ -138,8 +138,13 @@ public class Client {
 
 
     private void GUImaker(){
+        //Frame Section
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(1,2));
+        frame.add(panel);
+        frame.setBackground(java.awt.Color.lightGray);
+
+
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendstart();
@@ -152,17 +157,13 @@ public class Client {
             }
         } );
 
-        frame.add(panel);
         panel.add(functions);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        yourcolor.setHorizontalAlignment(SwingConstants.CENTER);
-        yourcolor.setVerticalAlignment(SwingConstants.CENTER);
-        serverinfo.setHorizontalAlignment(SwingConstants.CENTER);
-        serverinfo.setVerticalAlignment(SwingConstants.CENTER);
-        size.setHorizontalAlignment(SwingConstants.CENTER);
-        size.setVerticalAlignment(SwingConstants.CENTER);
 
+
+        // JPanel (function) section
         functions.setLayout(new BoxLayout(functions, BoxLayout.PAGE_AXIS));
+        functions.setBackground(java.awt.Color.lightGray);
         functions.add(hello);
         functions.add(yourcolor);
         functions.add(serverinfo);
@@ -259,7 +260,8 @@ public class Client {
                 int startY = Integer.parseInt(st.nextToken());
                 int goalX = Integer.parseInt(st.nextToken());
                 int goalY = Integer.parseInt(st.nextToken());
-                //TODO implement move on client side
+                board.move(startX,startY,goalX,goalY);
+                board.repaint();
             } else if(msg.startsWith("RESTART")){
                 frame.remove(board);
                 serverinfo.setText("RESTART!");
@@ -275,6 +277,7 @@ public class Client {
                 st.nextToken();
                 info = st.nextToken() + " Wins!";
                 serverinfo.setText(info);
+                frame.remove(board);
             } else if(msg.startsWith("COLOR")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();

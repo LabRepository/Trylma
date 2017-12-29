@@ -24,6 +24,7 @@ public class BoardGUI extends JPanel {
     BoardGUI(int NoPlayers, int sets) {
         setupBoard();
         setupPlayers(NoPlayers, sets);
+        this.setBackground(Color.lightGray);
     }
 
     /**
@@ -32,11 +33,11 @@ public class BoardGUI extends JPanel {
     private void setupBoard() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                board[i][j] = Color.WHITE;
+                board[i][j] = Color.lightGray;
             }
         }
-        constructTriangle(0, 13, 12, Color.lightGray, 't');
-        constructTriangle(16, 13, 12, Color.lightGray, 'r');
+        constructTriangle(0, 13, 12, Color.GRAY, 't');
+        constructTriangle(16, 13, 12, Color.GRAY, 'r');
     }
 
     /**
@@ -172,7 +173,7 @@ public class BoardGUI extends JPanel {
         for (int y = 0; y < board[0].length; y++) {
             for (int x = 0; x < board.length; x++) {
                 Color color = board[x][y];
-                if (color.getRGB() != Color.WHITE.getRGB()) {
+                if (color.getRGB() != Color.LIGHT_GRAY.getRGB()) {
                     g2d.setPaint(color);
                     g2d.fillOval((int) (10 + x * width / 1.73), 10 + y * width, width, width);
                 }
@@ -190,4 +191,10 @@ public class BoardGUI extends JPanel {
             g2d.setStroke(oldStroke);
         }
     }
+
+    public void move(int startX, int startY, int goalX, int golaY){
+        board[goalX][golaY] = board [startX][startY];
+        board[startX][startY] = Color.GRAY;
+    }
+
 }
