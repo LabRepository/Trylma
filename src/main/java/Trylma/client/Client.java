@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-//TODO Write tests and Develop
+//TODO Write tests and add mouse handler
 
 /**
  * Basic client version (can handle inputs and send requests to server)
@@ -82,18 +82,14 @@ public class Client {
      */
     Color color;
     /**
-     *
+     * Contains hello message
      */
     JLabel hello = new JLabel("Welcome in our Trylma Client. Enjoy!");
-    private Scanner scn = new Scanner(System.in);
 
     /**
      * Constructor makes new Data Input and Output Streams and Starts readMessage Thread for
      * reading messages from server
      */
-
-
-
     Client() {
         try {
             ip = InetAddress.getByName("localhost");
@@ -105,10 +101,6 @@ public class Client {
             System.out.print("Server is Offline!");
             System.exit(1);
         }
-        //TODO DELETE this when gui would be implemented
-        createwritethread();
-        sendMessage.start();
-        //TODO END DELETE
 
         createreadthread();
         readMessage.start();
@@ -116,18 +108,19 @@ public class Client {
         GUImaker();
 
     }
-//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////
 //    GUI
-/////////////////////////////////////////////////////
+//////////////////////////////////////////
     private JFrame frame = new JFrame("Chinese Checkers");
     private JPanel panel = new JPanel(new GridLayout(1,2));
     private JPanel functions = new JPanel(new FlowLayout());
-    private JPanel east = new JPanel();
     private JLabel yourcolor = new JLabel("Color");
     private JLabel serverinfo = new JLabel("Info");
     private JLabel size = new JLabel("Size");
     private JButton start = new JButton("Start");
     private JButton done = new JButton("DONE");
+    private JButton addbot = new JButton("Add Bot");
+    private JButton removebot = new JButton("Remove Bot");
     private BoardGUI board;
 
 
@@ -143,8 +136,10 @@ public class Client {
         frame.setLayout(new GridLayout(1,2));
         frame.add(panel);
         frame.setBackground(java.awt.Color.lightGray);
+        panel.add(functions);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-
+        //Action Handlers
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendstart();
@@ -157,8 +152,18 @@ public class Client {
             }
         } );
 
-        panel.add(functions);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        addbot.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendaddbot();
+            }
+        } );
+        done.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendremovebot();
+            }
+        } );
+
+
 
 
         // JPanel (function) section
@@ -170,14 +175,23 @@ public class Client {
         functions.add(size);
         functions.add(start);
         functions.add(done);
+        functions.add(addbot);
+        functions.add(removebot);
 
+        // Labels font size
+        yourcolor.setFont(new Font("Serif", Font.PLAIN, 20));
+        serverinfo.setFont(new Font("Serif", Font.PLAIN, 20));
+        size.setFont(new Font("Serif", Font.PLAIN, 20));
+        hello.setFont(new Font("Serif", Font.PLAIN, 20));
+
+        //Frame Section
         frame.setResizable(true);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////
 //    GUI
-/////////////////////////////////////////////////////
+//////////////////////////////////////////
 
 
     /**
@@ -204,35 +218,9 @@ public class Client {
         });
     }
 
-    /**
-     * TODO DELETE THIS When GUI would be implemented
-     */
-    private void createwritethread(){
-        sendMessage = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    String msg = scn.nextLine();
-                    try {
-
-                        dos.writeUTF(msg);
-                    } catch (IOException e) {
-                        try {
-                            s.close();
-                            System.out.print("Connection Lost!");
-                            System.exit(1);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    /**
+     /**
      * Function parse inputs from server
-     * //TODO DEVELOP this function
+     *
      */
     private void inputhandler(){
         if(msg != null){
@@ -244,6 +232,9 @@ public class Client {
                     size.setText("Game size: " + gamesize.toString());
                     board = new BoardGUI(gamesize,1);
                     frame.add(board);
+                    start.setVisible(false);
+                    addbot.setVisible(false);
+                    removebot.setVisible(false);
                 }
                 //TODO implement game start on client side
             } else if(msg.startsWith("Wrng")){
@@ -264,6 +255,9 @@ public class Client {
                 board.repaint();
             } else if(msg.startsWith("RESTART")){
                 frame.remove(board);
+                start.setVisible(true);
+                addbot.setVisible(true);
+                removebot.setVisible(true);
                 serverinfo.setText("RESTART!");
                 size.setText("Size  ");
             } else if(msg.startsWith("TURN")){
@@ -365,10 +359,13 @@ public class Client {
     }
 
     /**
-     * Function call to add bot to game;
+     * Function send request to add bot in server;
      */
     public void sendaddbot(){
-        //TODO implement
+        send("BOT#ADD");
+    }
+    public void sendremovebot(){
+        send("BOT#REMOVE");
     }
 
     /**
