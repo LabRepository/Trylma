@@ -10,7 +10,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class Game {
-    /*private*/ Board board;
+    public Board board;
     private int numberOfPawns = 10;
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
     private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
