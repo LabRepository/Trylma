@@ -42,12 +42,12 @@ public class temporaryDisplayClass {
                 System.out.print("\n");
             }
                 game.moveBot("BLACKPAWN");
-                game.moveBot("WHITEPAWN");
+                //game.moveBot("WHITEPAWN");
 
                 sleep(1000);
             }
         } catch (RuntimeException r) {
-            System.out.print(r.getMessage());
+            System.out.print(r.getStackTrace());
         } catch (InterruptedException c){}
     }
 }
