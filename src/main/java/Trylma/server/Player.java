@@ -151,4 +151,11 @@ public class Player extends Thread implements AbstractPlayer {
         this.color = color;
         send("COLOR;"+color);
     }
+    /**
+     * Color getter
+     * @see Color
+     */
+    public Color getColor() {
+        return color;
+    }
 }

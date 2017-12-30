@@ -69,6 +69,7 @@ public class Gamelobby {
     public void exit(Player player) {
         if(isrunning) {
             players.remove(player);
+            turn.clear();
             NoPlayers--;
             restart();
         } else {
