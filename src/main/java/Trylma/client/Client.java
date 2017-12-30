@@ -1,7 +1,6 @@
 package Trylma.client;
 
 import Trylma.Color;
-import com.sun.java.accessibility.util.GUIInitializedListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 //TODO Write tests and add mouse handler
@@ -82,7 +80,7 @@ public class Client {
     /**
      * Contains client current Color.
      */
-    Color color;
+    java.awt.Color color;
     /**
      * Contains hello message
      */
@@ -165,15 +163,6 @@ public class Client {
             }
         } );
 
-        board.addMouseListener(new MouseAdapter() {
-            //TODO IMPLEMENT
-            public void mousePressed(MouseEvent mouseEvent) {
-
-            }
-        });
-
-
-
 
         // JPanel (function) section
         functions.setLayout(new BoxLayout(functions, BoxLayout.PAGE_AXIS));
@@ -229,7 +218,6 @@ public class Client {
 
      /**
      * Function parse inputs from server
-     *
      */
     private void inputhandler(){
         if(msg != null){
@@ -238,14 +226,8 @@ public class Client {
                 st.nextToken();
                 gamesize = Integer.parseInt(st.nextToken());
                 if(gamesize != null) {
-                    size.setText("Game size: " + gamesize.toString());
-                    board = new BoardGUI(gamesize,1);
-                    frame.add(board);
-                    start.setVisible(false);
-                    addbot.setVisible(false);
-                    removebot.setVisible(false);
+                    startgame();
                 }
-                //TODO implement game start on client side
             } else if(msg.startsWith("Wrng")){
                 st = new StringTokenizer(msg,";");
                 st.nextToken();
@@ -254,44 +236,89 @@ public class Client {
                     serverinfo.setText(info);
                 }
             } else if(msg.startsWith("MOVE")){
-                StringTokenizer st = new StringTokenizer(msg,";");
-                st.nextToken();
-                int startX = Integer.parseInt(st.nextToken());
-                int startY = Integer.parseInt(st.nextToken());
-                int goalX = Integer.parseInt(st.nextToken());
-                int goalY = Integer.parseInt(st.nextToken());
-                board.move(startX,startY,goalX,goalY);
-                board.repaint();
+                    move(msg);
             } else if(msg.startsWith("RESTART")){
-                frame.remove(board);
-                start.setVisible(true);
-                addbot.setVisible(true);
-                removebot.setVisible(true);
-                serverinfo.setText("RESTART!");
-                size.setText("Size  ");
+                    restart();
             } else if(msg.startsWith("TURN")){
-                st = new StringTokenizer(msg,";");
-                st.nextToken();
-                turn = st.nextToken();
-                turn = turn + " turn  ";
-                serverinfo.setText(turn);
+                    turn(msg);
             } else if(msg.startsWith("WIN")){
-                st = new StringTokenizer(msg,";");
-                st.nextToken();
-                info = st.nextToken() + " Wins!";
-                serverinfo.setText(info);
-                frame.remove(board);
+                    win(msg);
             } else if(msg.startsWith("COLOR")){
-                st = new StringTokenizer(msg,";");
-                st.nextToken();
-                String color =  st.nextToken();
-                castcolor(color);
-                yourcolor.setText("Your Color: "+color.toString()+"  ");
+                colormsg(msg);
             }
 
         }
     }
 
+    /**
+     * Function starts game in client
+     */
+    private void startgame(){
+        size.setText("Game size: " + gamesize.toString());
+        board = new BoardGUI(gamesize,1);
+        frame.add(board);
+        mouselistener();
+        start.setVisible(false);
+        addbot.setVisible(false);
+        removebot.setVisible(false);
+    }
+    /**
+     * Function move pawn in client
+     */
+    private void move(String msg){
+        StringTokenizer st = new StringTokenizer(msg,";");
+        st.nextToken();
+        int startX = Integer.parseInt(st.nextToken());
+        int startY = Integer.parseInt(st.nextToken());
+        int goalX = Integer.parseInt(st.nextToken());
+        int goalY = Integer.parseInt(st.nextToken());
+        board.move(startX,startY,goalX,goalY);
+        board.repaint();
+    }
+    /**
+     * Function restarts game in client
+     */
+    private void restart(){
+        frame.remove(board);
+        start.setVisible(true);
+        addbot.setVisible(true);
+        removebot.setVisible(true);
+        serverinfo.setText("RESTART!");
+        size.setText("Size  ");
+    }
+
+    /**
+     * Function set game turn
+     */
+    private void turn(String msg){
+        st = new StringTokenizer(msg,";");
+        st.nextToken();
+        turn = st.nextToken();
+        turn = turn + " turn  ";
+        serverinfo.setText(turn);
+    }
+    /**
+     * Function call after win
+     */
+    private void win(String msg){
+        st = new StringTokenizer(msg,";");
+        st.nextToken();
+        info = st.nextToken() + " Wins!";
+        serverinfo.setText(info);
+        frame.remove(board);
+        restart();
+        JOptionPane.showMessageDialog(null, "Game ended!" + info, "WIN!", JOptionPane.INFORMATION_MESSAGE);
+    }
+    /**
+     * Function give client specific color
+     */
+    private void colormsg(String msg){
+        st = new StringTokenizer(msg,";");
+        st.nextToken();
+        String color =  st.nextToken();
+        castcolor(color);
+        yourcolor.setText("Your Color: "+color.toString()+"  ");
+    }
     /**
      * Function send "JOIN" (to game lobby) request to server
      * Use this when server can handle more than 1 game
@@ -368,11 +395,15 @@ public class Client {
     }
 
     /**
-     * Function send request to add bot in server;
+     * Function send add bot request to server;
      */
     public void sendaddbot(){
         send("BOT#ADD");
     }
+
+    /**
+     * Function send remove bot request to server;
+     */
     public void sendremovebot(){
         send("BOT#REMOVE");
     }
@@ -385,28 +416,110 @@ public class Client {
     public void castcolor(String c){
         switch(c){
             case "BLACKPAWN":
-                color = Color.BLACKPAWN;
+                color = java.awt.Color.BLACK;
                 break;
             case "WHITEPAWN":
-                color = Color.WHITEPAWN;
+                color = color = java.awt.Color.WHITE;;
                 break;
             case "REDPAWN":
-                color = Color.REDPAWN;
+                color = color = java.awt.Color.RED;;
                 break;
             case "BLUEPAWN":
-                color = Color.BLUEPAWN;
+                color = color = java.awt.Color.BLUE;;
                 break;
             case "GREENPAWN":
-                color = Color.GREENPAWN;
+                color = color = java.awt.Color.GREEN;
                 break;
             case "YELLOWPAWN":
-                color = Color.YELLOWPAWN;
+                color = color = java.awt.Color.YELLOW;;
                 break;
             default:
                 System.out.print("Wrong Color!");
                 break;
         }
     }
+
+    /**
+     * Mouse Listener init
+     */
+    private void mouselistener(){
+        board.addMouseListener(new MouseAdapter() {
+            int clickCounter = 0;
+            int startX, startY, goalX, goalY;
+            boolean missClick = true;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                missClick = true;
+                clickCounter++;
+                int mX, mY;
+
+                if (clickCounter == 1) {
+                    mX = e.getX();
+                    mY = e.getY();
+
+                    for (int y = 0; y < board.board[0].length; y++) {
+                        for (int x = 0; x < board.board.length; x++) {
+                            java.awt.Color tmpcolor = board.board[x][y];
+                            if (tmpcolor.getRGB() == color.getRGB()) {
+                                if ((Math.hypot(
+                                        (int) (10 + board.width / 2 + x * board.width / 1.73
+                                                - mX),
+                                        10 + board.width / 2 + y * board.width
+                                                - mY) <= board.width / 2)) {
+                                    board.activeX = x;
+                                    board.activeY = y;
+                                    startX = x;
+                                    startY = y;
+                                    board.repaint();
+                                    missClick = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (missClick) {
+                        board.activeX = -1;
+                        board.activeY = -1;
+                        clickCounter--;
+                        board.repaint();
+                    }
+
+                } else if (clickCounter == 2) {
+                    mX = e.getX();
+                    mY = e.getY();
+
+                    for (int y = 0; y < board.board[0].length; y++) {
+                        for (int x = 0; x < board.board.length; x++) {
+                            java.awt.Color color = board.board[x][y];
+                            if (color.getRGB() == java.awt.Color.GRAY.getRGB()) {
+                                if ((Math.hypot(
+                                        (int) (10 + board.width / 2 + x * board.width / 1.73
+                                                - mX),
+                                        10 + board.width / 2 + y * board.width
+                                                - mY) <= board.width / 2)) {
+                                    goalX = x;
+                                    goalY = y;
+                                    missClick = false;
+                                }
+                            }
+                        }
+                    }
+
+                    board.activeX = -1;
+                    board.activeY = -1;
+                    clickCounter = 0;
+
+                    if (!missClick) {
+                        sendmove(startX,startY,goalX,goalY);
+
+                    }
+                    board.repaint();
+                }
+            }
+        });
+    }
+
 
     public static void main(String args[]) throws IOException {
         Client c = new Client();
