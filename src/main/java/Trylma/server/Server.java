@@ -21,7 +21,7 @@ public class Server {
     /**
      * ArrayList of Players
      */
-    static ArrayList<Player> players = new ArrayList<>();
+    volatile static ArrayList<Player> players = new ArrayList<>();
     /**
      * Server Listener
      */
@@ -69,15 +69,14 @@ public class Server {
      */
     private void listening() throws IOException {
         while (isrunning) {
-            if(players.size() < PLAYER_LIMIT) {
+            if(players.size() < PLAYER_LIMIT && !gamelobby.getstate()) {
                 players.add(new Player(listener.accept(),NoPlayers));
                 players.get(players.size() - 1).start();
                 players.get(players.size() - 1).send("Welcome on game Server");
                 //auto joining to gameloobby
                 gamelobby.addplayer(players.get(players.size() - 1));
                 NoPlayers++;
-            } else
-            {
+            } else  {
                 Player p = new Player(listener.accept(),99);
                 p.send("Too many players, Please come later!");
                 p.s.close();

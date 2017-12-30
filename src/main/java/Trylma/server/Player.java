@@ -67,7 +67,9 @@ public class Player extends Thread implements AbstractPlayer {
                     s.close();
                     System.out.println(id + " Player died!");
                     isloggedin = false;
-                    Server.gamelobby.exit(this);
+                    if(Server.gamelobby.players.contains(this)) {
+                        Server.gamelobby.exit(this);
+                    }
                     Server.exit(this);
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -150,12 +152,5 @@ public class Player extends Thread implements AbstractPlayer {
     public void setColor(Color color) {
         this.color = color;
         send("COLOR;"+color);
-    }
-    /**
-     * Color getter
-     * @see Color
-     */
-    public Color getColor() {
-        return color;
     }
 }

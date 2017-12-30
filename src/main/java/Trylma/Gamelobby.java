@@ -15,7 +15,7 @@ public class Gamelobby {
     private int NoPlayers = 0;
     private int NoBots = 0;
     public Game game;
-    private boolean isrunning = false;
+    private volatile boolean isrunning = false;
 
     /**
      * Constructor
@@ -69,7 +69,6 @@ public class Gamelobby {
     public void exit(Player player) {
         if(isrunning) {
             players.remove(player);
-            turn.clear();
             NoPlayers--;
             restart();
         } else {
@@ -172,6 +171,7 @@ public class Gamelobby {
             respond("WIN;"+game.checkEnd());
             game = null;
             isrunning = false;
+            turn.clear();
         }
     }
 
@@ -196,6 +196,7 @@ public class Gamelobby {
     public void restart(){
         game = null;
         isrunning = false;
+        turn.clear();
         respond("RESTART");
     }
 
