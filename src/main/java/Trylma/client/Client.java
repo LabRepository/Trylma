@@ -13,8 +13,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
-//TODO Write tests and add mouse handler
-
 /**
  * Basic client version (can handle inputs and send requests to server)
  * @author Jakub Czyszczonik
@@ -35,11 +33,6 @@ public class Client {
      */
     private final static int ServerPort = 12345;
     /**
-     * Server Ip Adres
-     * @see InetAddress
-     */
-    private InetAddress ip;
-    /**
      * Socket
      * @see Socket
      */
@@ -54,10 +47,6 @@ public class Client {
      * @see Thread
      */
     private Thread readMessage;
-    /**
-     * Contains Turn Color
-     */
-    private String turn = "";
     /**
      * Contains Info from server
      */
@@ -74,15 +63,34 @@ public class Client {
     /**
      * Contains number of players in current Game
      */
-    Integer gamesize;
+    private Integer gamesize;
     /**
      * Contains client current Color.
      */
-    java.awt.Color color;
+    private java.awt.Color color;
     /**
-     * Contains hello message
+     * Contains current game board
      */
-    JLabel hello = new JLabel("Welcome in our Trylma Client. Enjoy!");
+    private BoardGUI board;
+
+    /*
+     * GUI ELEMENTS
+     */
+
+    //FRAME
+    private JFrame frame = new JFrame("Chinese Checkers");
+    //PANELS
+    private JPanel functions = new JPanel(new FlowLayout());
+    //LABELS
+    private JLabel hello = new JLabel("Welcome in our Trylma Client. Enjoy!");
+    private JLabel yourcolor = new JLabel("Color");
+    private JLabel serverinfo = new JLabel("Info");
+    private JLabel size = new JLabel("Size");
+    //BUTTONS
+    private JButton start = new JButton("Start");
+    private JButton done = new JButton("DONE");
+    private JButton addbot = new JButton("Add Bot");
+    private JButton removebot = new JButton("Remove Bot");
 
     /**
      * Constructor makes new Data Input and Output Streams and Starts readMessage Thread for
@@ -90,51 +98,28 @@ public class Client {
      */
     Client() {
         try {
-            ip = InetAddress.getByName("localhost");
+            InetAddress ip = InetAddress.getByName("localhost");
             s = new Socket(ip, ServerPort);
             dis = new DataInputStream(s.getInputStream());
             dos = new DataOutputStream(s.getOutputStream());
-
         } catch (IOException e) {
             System.out.print("Server is Offline!");
             System.exit(1);
         }
-
         createreadthread();
         readMessage.start();
-
         GUImaker();
-
     }
-//////////////////////////////////////////
-//    GUI
-//////////////////////////////////////////
-    private JFrame frame = new JFrame("Chinese Checkers");
-    private JPanel panel = new JPanel(new GridLayout(1,2));
-    private JPanel functions = new JPanel(new FlowLayout());
-    private JLabel yourcolor = new JLabel("Color");
-    private JLabel serverinfo = new JLabel("Info");
-    private JLabel size = new JLabel("Size");
-    private JButton start = new JButton("Start");
-    private JButton done = new JButton("DONE");
-    private JButton addbot = new JButton("Add Bot");
-    private JButton removebot = new JButton("Remove Bot");
-    private BoardGUI board;
 
-
-
-
-
-
-
-
+    /**
+     * GUI Constructor
+     */
     private void GUImaker(){
-        //Frame Section
+        //Frame Settings
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(1,2));
-        frame.add(panel);
+        frame.add(functions);
         frame.setBackground(java.awt.Color.lightGray);
-        panel.add(functions);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         //Action Handlers
@@ -161,7 +146,6 @@ public class Client {
             }
         } );
 
-
         // JPanel (function) section
         functions.setLayout(new BoxLayout(functions, BoxLayout.PAGE_AXIS));
         functions.setBackground(java.awt.Color.lightGray);
@@ -185,10 +169,6 @@ public class Client {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-//////////////////////////////////////////
-//    GUI
-//////////////////////////////////////////
-
 
     /**
      * Creates readMessage Thread with inputhandler inside;
@@ -291,7 +271,7 @@ public class Client {
     private void turn(String msg){
         st = new StringTokenizer(msg,";");
         st.nextToken();
-        turn = st.nextToken();
+        String turn = st.nextToken();
         turn = turn + " turn  ";
         serverinfo.setText(turn);
     }
@@ -461,7 +441,7 @@ public class Client {
                             java.awt.Color tmpcolor = board.board[x][y];
                             if (tmpcolor.getRGB() == color.getRGB()) {
                                 if ((Math.hypot(
-                                        (int) (10 + board.width / 2 + x * board.width / 1.73
+                                        (int) (10 + board.width / 2 + x * board.width / 1.6
                                                 - mX),
                                         10 + board.width / 2 + y * board.width
                                                 - mY) <= board.width / 2)) {
@@ -492,7 +472,7 @@ public class Client {
                             java.awt.Color color = board.board[x][y];
                             if (color.getRGB() == java.awt.Color.GRAY.getRGB()) {
                                 if ((Math.hypot(
-                                        (int) (10 + board.width / 2 + x * board.width / 1.73
+                                        (int) (10 + board.width / 2 + x * board.width / 1.6
                                                 - mX),
                                         10 + board.width / 2 + y * board.width
                                                 - mY) <= board.width / 2)) {

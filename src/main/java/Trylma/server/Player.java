@@ -18,14 +18,18 @@ public class Player extends Thread implements AbstractPlayer {
      * Player ID
      */
     private int id;
-    private Color color;
-    private DataInputStream is;
-    private DataOutputStream os;
-    public Socket s;
     /**
      * Player State
      */
     private boolean isloggedin;
+    /**
+     * Player Color
+     */
+
+    private Color color;
+    private DataInputStream is;
+    private DataOutputStream os;
+    public Socket s;
 
 
     /**
@@ -36,7 +40,7 @@ public class Player extends Thread implements AbstractPlayer {
      * @see DataInputStream
      * @see Socket
      */
-    Player(Socket s, int id) {
+    public Player(Socket s, int id) {
 
         this.s = s;
         this.isloggedin = true;
@@ -92,13 +96,13 @@ public class Player extends Thread implements AbstractPlayer {
      */
     private void inputhandler(String received){
         if (received.startsWith("JOIN")) {
-            //TODO implement this when server can handle more than 1 game
+            //implement this when server can handle more than 1 game
         } else if (received.startsWith("MOVE")&& Server.gamelobby.getstate()) {
             if(Server.gamelobby.isturn(color)) {
                 move(received);
             }
         } else if (received.startsWith("QUIT")) {
-            //TODO implement this when server can handle more than 1 game
+            //implement this when server can handle more than 1 game
         } else if (received.startsWith("START")) {
             Server.gamelobby.rungame();
         } else if (received.startsWith("BOTA")) {
@@ -112,6 +116,10 @@ public class Player extends Thread implements AbstractPlayer {
         }
     }
 
+    /**
+     * Send message to current player
+     * @param msg message
+     */
     @Override
     public void send(String msg){
         try{
@@ -124,6 +132,10 @@ public class Player extends Thread implements AbstractPlayer {
 
     }
 
+    /**
+     * Function parse received string
+     * @param received String with move coordinates
+     */
     public void move(String received){
         StringTokenizer st = new StringTokenizer(received,";");
         st.nextToken();

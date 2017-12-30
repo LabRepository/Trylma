@@ -1,21 +1,43 @@
 package Trylma;
 
 import Trylma.server.Player;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Gamelobby {
-    //TODO repair moving 9;3;13;3
+    /**
+     * Contain game id
+     * variable for future develop
+     */
     final private int gameid = 0;
-    private Board board;
+    /**
+     * Array list players in lobby.
+     */
     public ArrayList<Player> players = new ArrayList<>();
+    /**
+     * Linked list contains game (turn) queue
+     */
     private LinkedList<Color> turn = new LinkedList<>();
+    /**
+     * Contains color for bot.
+     */
     private ArrayList<Color> bot = new ArrayList<>();
+    /**
+     * Players number
+     */
     private int NoPlayers = 0;
+    /**
+     * Bot number
+     */
     private int NoBots = 0;
+    /**
+     * Current game
+     */
     public Game game;
+    /**
+     * Game state
+     */
     private volatile boolean isrunning = false;
 
     /**
@@ -69,10 +91,16 @@ public class Gamelobby {
         }
     }
 
+    /**
+     * For exit player from lobby
+     * @param player
+     */
     public void exit(Player player) {
         if(isrunning) {
             players.remove(player);
             NoPlayers--;
+            NoBots = 0;
+            bot.clear();
             restart();
         } else {
             players.remove(player);
@@ -123,6 +151,10 @@ public class Gamelobby {
 
     }
 
+    /**
+     * Function give color and add to queue
+     * @param gamers number of players
+     */
     public void addcolors(int gamers){
         int tmp = 0;
         if(gamers == 2) {
@@ -163,7 +195,12 @@ public class Gamelobby {
 
     }
 
-    public void colorhelper(int tmp, Color c){
+    /**
+     * Function help in giving color
+     * @param tmp player/bot number
+     * @param c color
+     */
+    private void colorhelper(int tmp, Color c){
         if(tmp<players.size()) {
             players.get(tmp).setColor(c);
         } else {
@@ -171,21 +208,34 @@ public class Gamelobby {
         }
     }
 
+    /**
+     * Function respond message to whole players in lobby
+     * @param respond message
+     */
     public void respond(String respond){
         for (Player p: players) {
             p.send(respond);
         }
     }
 
+    /**
+     * Function checking game winner
+     */
     public void hasWinner(){
-        if(!game.checkEnd().equals("NONE")){
-            respond("WIN;"+game.checkEnd());
+        String winner = game.checkEnd();
+        if(!winner.equals("NONE")){
+            respond("WIN;"+winner);
             game = null;
             isrunning = false;
             turn.clear();
         }
     }
 
+    /**
+     * Checking turn for color
+     * @param c color
+     * @return boolean
+     */
     public boolean isturn(Color c){
 
         if(turn.getFirst() == c){
@@ -193,6 +243,10 @@ public class Gamelobby {
         } return false;
     }
 
+    /**
+     * Handles moving queue
+     * @param c Color
+     */
     public void moveturn(Color c){
         if(!isrunning)
         {
@@ -201,9 +255,15 @@ public class Gamelobby {
         turn.remove(c);
         turn.addLast(c);
         c = turn.getFirst();
+        if(bot.contains(c)){
+            botmove(c);
+        }
         respond("TURN;"+c.toString());
     }
 
+    /**
+     * End game and send restart
+     */
     public void restart(){
         game = null;
         isrunning = false;
@@ -213,14 +273,30 @@ public class Gamelobby {
         respond("RESTART");
     }
 
+    /**
+     * State of game
+     * @return boolean
+     */
     public boolean getstate(){
         return isrunning;
     }
 
+    /**
+     * Function handles bot moving
+     * @param c Pawn color
+     */
     private void botmove(Color c){
         int[] result = game.moveBot(c.toString());
         respond("MOVE;"+result[0]+";"+result[1]+";"+result[2]+";"+result[3]);
         hasWinner();
         moveturn(c);
+    }
+
+    /**
+     * NoBots getter
+     * @return int
+     */
+    public int getNoBots(){
+        return NoBots;
     }
 }
