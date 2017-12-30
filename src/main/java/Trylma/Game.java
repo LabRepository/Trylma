@@ -22,6 +22,7 @@ public class Game {
 
     public int[] moveBot(String color) {
         int[] result = bot(color);
+        System.out.print("["+result[0]+", "+result[1]+", "+result[2]+", "+result[3]+"]");
         moving(result[0], result[1], result[2], result[3]);
         return result;
     }
