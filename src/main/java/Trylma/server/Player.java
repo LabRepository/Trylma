@@ -101,8 +101,10 @@ public class Player extends Thread implements AbstractPlayer {
             //TODO implement this when server can handle more than 1 game
         } else if (received.startsWith("START")) {
             Server.gamelobby.rungame();
-        } else if (received.startsWith("BOT")) {
+        } else if (received.startsWith("BOTA")) {
             Server.gamelobby.addbot();
+        } else if (received.startsWith("BOTR")) {
+            Server.gamelobby.removebot();
         } else if (received.startsWith("DONE") && Server.gamelobby.getstate()) {
             if(Server.gamelobby.isturn(color)) {
                 Server.gamelobby.moveturn(color);

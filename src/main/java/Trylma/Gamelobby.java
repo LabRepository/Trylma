@@ -1,17 +1,18 @@
 package Trylma;
 
 import Trylma.server.Player;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Gamelobby {
     //TODO repair moving 9;3;13;3
-    //TODO ADD bots and handling bots
     final private int gameid = 0;
     private Board board;
     public ArrayList<Player> players = new ArrayList<>();
     private LinkedList<Color> turn = new LinkedList<>();
+    private ArrayList<Color> bot = new ArrayList<>();
     private int NoPlayers = 0;
     private int NoBots = 0;
     public Game game;
@@ -54,16 +55,18 @@ public class Gamelobby {
      * Function add bot to game
      */
     public void addbot(){
-        if(NoPlayers <= 6) {
-            //TODO Implement this method later
-        } else throw new RuntimeException("Youcantaddbot");
+        if(NoPlayers <= 6 && NoBots < 5 ) {
+            NoBots++;
+        }
     }
 
     /**
      * Function remove bot from game
      */
     public void removebot(){
-        //TODO Implement this method later
+        if(NoBots>0){
+            NoBots--;
+        }
     }
 
     public void exit(Player player) {
@@ -90,28 +93,28 @@ public class Gamelobby {
                 game = new Game(gamers,1);
                 isrunning = true;
                 respond("START;"+gamers);
-                addcolors(2);
+                addcolors(gamers);
                 respond("TURN;"+turn.getFirst().toString());
                 break;
             case 3:
                 game = new Game(gamers,1);
                 isrunning = true;
                 respond("START;"+gamers);
-                addcolors(3);
+                addcolors(gamers);
                 respond("TURN;"+turn.getFirst().toString());
                 break;
             case 4:
                 game = new Game(gamers,1);
                 isrunning = true;
                 respond("START;"+gamers);
-                addcolors(4);
+                addcolors(gamers);
                 respond("TURN;"+turn.getFirst().toString());
                 break;
             case 6:
                 game = new Game(gamers,1);
                 isrunning = true;
                 respond("START;"+gamers);
-                addcolors(6);
+                addcolors(gamers);
                 respond("TURN;"+turn.getFirst().toString());
                 break;
             default:
@@ -121,34 +124,35 @@ public class Gamelobby {
     }
 
     public void addcolors(int gamers){
+        int tmp = 0;
         if(gamers == 2) {
-            players.get(0).setColor(Color.BLACKPAWN);
-            players.get(1).setColor(Color.WHITEPAWN);
+            colorhelper(tmp++,Color.BLACKPAWN);
+            colorhelper(tmp,Color.WHITEPAWN);
             turn.addLast(Color.BLACKPAWN);
             turn.addLast(Color.WHITEPAWN);
         } else if (gamers == 3) {
-            players.get(0).setColor(Color.YELLOWPAWN);
-            players.get(1).setColor(Color.WHITEPAWN);
-            players.get(2).setColor(Color.REDPAWN);
+            colorhelper(tmp++,Color.YELLOWPAWN);
+            colorhelper(tmp++,Color.WHITEPAWN);
+            colorhelper(tmp,Color.REDPAWN);
             turn.addLast(Color.YELLOWPAWN);
             turn.addLast(Color.WHITEPAWN);
             turn.addLast(Color.REDPAWN);
         } else if(gamers == 4){
-            players.get(0).setColor(Color.YELLOWPAWN);
-            players.get(1).setColor(Color.GREENPAWN);
-            players.get(2).setColor(Color.REDPAWN);
-            players.get(3).setColor(Color.BLUEPAWN);
+            colorhelper(tmp++,Color.YELLOWPAWN);
+            colorhelper(tmp++,Color.GREENPAWN);
+            colorhelper(tmp++,Color.REDPAWN);
+            colorhelper(tmp,Color.BLUEPAWN);
             turn.addLast(Color.YELLOWPAWN);
             turn.addLast(Color.GREENPAWN);
             turn.addLast(Color.REDPAWN);
             turn.addLast(Color.BLUEPAWN);
         } else if(gamers == 6){
-            players.get(0).setColor(Color.YELLOWPAWN);
-            players.get(1).setColor(Color.GREENPAWN);
-            players.get(2).setColor(Color.REDPAWN);
-            players.get(3).setColor(Color.BLUEPAWN);
-            players.get(4).setColor(Color.BLACKPAWN);
-            players.get(5).setColor(Color.WHITEPAWN);
+            colorhelper(tmp++,Color.YELLOWPAWN);
+            colorhelper(tmp++,Color.GREENPAWN);
+            colorhelper(tmp++,Color.REDPAWN);
+            colorhelper(tmp++,Color.BLUEPAWN);
+            colorhelper(tmp++,Color.BLACKPAWN);
+            colorhelper(tmp,Color.WHITEPAWN);
             turn.addLast(Color.YELLOWPAWN);
             turn.addLast(Color.GREENPAWN);
             turn.addLast(Color.REDPAWN);
@@ -159,6 +163,15 @@ public class Gamelobby {
 
     }
 
+    public void colorhelper(int tmp, Color c){
+        System.out.print("1: "+tmp);
+        if(tmp<players.size()) {
+            players.get(tmp).setColor(c);
+        } else {
+            System.out.print("BOTTTTTTTTTTTTTT" +c.toString());
+            bot.add(c);
+        }
+    }
 
     public void respond(String respond){
         for (Player p: players) {
@@ -191,16 +204,29 @@ public class Gamelobby {
         turn.addLast(c);
         c = turn.getFirst();
         respond("TURN;"+c.toString());
+        if(bot.contains(c));
+        {
+            botmove(c);
+        }
     }
 
     public void restart(){
         game = null;
         isrunning = false;
         turn.clear();
+        bot.clear();
+        NoBots = 0;
         respond("RESTART");
     }
 
     public boolean getstate(){
         return isrunning;
+    }
+
+    private void botmove(Color c){
+        int[] result = game.moveBot(c.toString());
+        respond("MOVE;"+result[0]+";"+result[1]+";"+result[2]+";"+result[3]);
+        hasWinner();
+        moveturn(c);
     }
 }

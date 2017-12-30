@@ -5,5 +5,5 @@ package Trylma;
  * @author Jakub Czyszczonik
  */
 public enum Color {
-    BLACKPAWN, WHITEPAWN, REDPAWN, BLUEPAWN, GREENPAWN, YELLOWPAWN
+    BLACKPAWN, WHITEPAWN, YELLOWPAWN, REDPAWN, BLUEPAWN, GREENPAWN
 }

@@ -398,14 +398,14 @@ public class Client {
      * Function send add bot request to server;
      */
     public void sendaddbot(){
-        send("BOT#ADD");
+        send("BOTA");
     }
 
     /**
      * Function send remove bot request to server;
      */
     public void sendremovebot(){
-        send("BOT#REMOVE");
+        send("BOTR");
     }
 
     /**
