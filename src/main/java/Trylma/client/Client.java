@@ -157,7 +157,7 @@ public class Client {
                 sendaddbot();
             }
         } );
-        done.addActionListener(new ActionListener() {
+        removebot.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendremovebot();
             }
