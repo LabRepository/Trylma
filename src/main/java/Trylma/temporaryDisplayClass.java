@@ -41,13 +41,18 @@ public class temporaryDisplayClass {
                 }
                 System.out.print("\n");
             }
-                //game.moveBot("BLACKPAWN");
+                game.moveBot("BLACKPAWN");
                 game.moveBot("WHITEPAWN");
-
-                sleep(1000);
+                String a = game.checkEnd();
+                switch(a){
+                    case "NONE":
+                        break;
+                    default:
+                        System.out.print(a + " WON!");
+                        return;
+                }
+                sleep(100);
             }
-        } catch (RuntimeException r) {
-            System.out.print(r.getLocalizedMessage());
         } catch (InterruptedException c){}
     }
 }
