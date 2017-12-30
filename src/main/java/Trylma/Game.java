@@ -1,9 +1,7 @@
 package Trylma;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
@@ -22,7 +20,7 @@ public class Game {
 
     public int[] moveBot(String color) {
         int[] result = bot(color);
-        System.out.print("["+result[0]+", "+result[1]+", "+result[2]+", "+result[3]+"]");
+        System.out.print("[" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + "]");
         moving(result[0], result[1], result[2], result[3]);
         return result;
     }
@@ -91,12 +89,13 @@ public class Game {
     }
 
     private boolean isMoveLegal = false;
+
     boolean legalMove(int startX, int startY, int goalX, int goalY) {
         isMoveLegal = false;
         if (board.board[goalX][goalY].getState().equals("EMPTY")) {
             if (abs(goalX - startX) > 2 || abs(goalY - startY) > 1) {
                 checkJump(startX, startY, goalX, goalY);
-            } else  {
+            } else {
                 isMoveLegal = true;
             }
         }
@@ -104,69 +103,81 @@ public class Game {
     }
 
     private void checkJump(int startX, int startY, int goalX, int goalY) {
-        if (!board.board[startX + 1][startY + 1].getState().equals("EMPTY") && !board.board[startX + 1][startY + 1].getState().equals("BLOCKED")) {
-            if (startX + 2 == goalX && startY + 2 == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX + 2][startY + 2].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX + 2, startY + 2}, checkedJumps)){
-                    checkedJumps.add(new int[]{startX, startY, startX + 2, startY + 2});
-                    checkJump(startX + 2, startY + 2, goalX, goalY);
+        if (startX + 2 < board.width && startY + 2 < board.height) {
+            if (!board.board[startX + 1][startY + 1].getState().equals("EMPTY") && !board.board[startX + 1][startY + 1].getState().equals("BLOCKED")) {
+                if (startX + 2 == goalX && startY + 2 == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX + 2][startY + 2].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX + 2, startY + 2}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX + 2, startY + 2});
+                        checkJump(startX + 2, startY + 2, goalX, goalY);
+                    }
                 }
             }
         }
-        if (!board.board[startX + 1][startY - 1].getState().equals("EMPTY") && !board.board[startX + 1][startY - 1].getState().equals("BLOCKED")) {
-            if (startX + 2 == goalX && startY - 2 == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX + 2][startY - 2].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX + 2, startY - 2}, checkedJumps)) {
-                    checkedJumps.add(new int[]{startX, startY, startX + 2, startY - 2});
-                    checkJump(startX + 2, startY - 2, goalX, goalY);
+        if (startX + 2 < board.width && startY - 2 >= 0) {
+            if (!board.board[startX + 1][startY - 1].getState().equals("EMPTY") && !board.board[startX + 1][startY - 1].getState().equals("BLOCKED")) {
+                if (startX + 2 == goalX && startY - 2 == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX + 2][startY - 2].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX + 2, startY - 2}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX + 2, startY - 2});
+                        checkJump(startX + 2, startY - 2, goalX, goalY);
+                    }
                 }
             }
         }
-        if (!board.board[startX + 2][startY].getState().equals("EMPTY") && !board.board[startX + 2][startY].getState().equals("BLOCKED")) {
-            if (startX + 4 == goalX && startY == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX + 4][startY].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX + 4, startY}, checkedJumps)) {
-                    checkedJumps.add(new int[]{startX, startY, startX + 4, startY});
-                    checkJump(startX + 4, startY, goalX, goalY);
+        if (startX + 4 < board.width) {
+            if (!board.board[startX + 2][startY].getState().equals("EMPTY") && !board.board[startX + 2][startY].getState().equals("BLOCKED")) {
+                if (startX + 4 == goalX && startY == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX + 4][startY].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX + 4, startY}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX + 4, startY});
+                        checkJump(startX + 4, startY, goalX, goalY);
+                    }
                 }
             }
         }
-        if (!board.board[startX - 2][startY].getState().equals("EMPTY") && !board.board[startX - 2][startY].getState().equals("BLOCKED")) {
-            if (startX - 4 == goalX && startY == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX - 4][startY].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX - 4, startY}, checkedJumps)) {
-                    checkedJumps.add(new int[]{startX, startY, startX - 4, startY});
-                    checkJump(startX - 4, startY, goalX, goalY);
+        if (startX - 4 >= 0) {
+            if (!board.board[startX - 2][startY].getState().equals("EMPTY") && !board.board[startX - 2][startY].getState().equals("BLOCKED")) {
+                if (startX - 4 == goalX && startY == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX - 4][startY].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX - 4, startY}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX - 4, startY});
+                        checkJump(startX - 4, startY, goalX, goalY);
+                    }
                 }
             }
         }
-        if (!board.board[startX - 1][startY + 1].getState().equals("EMPTY") && !board.board[startX - 1][startY + 1].getState().equals("BLOCKED")) {
-            if (startX - 2 == goalX && startY + 2 == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX - 2][startY + 2].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX - 2, startY + 2}, checkedJumps)) {
-                    checkedJumps.add(new int[]{startX, startY, startX - 2, startY + 2});
-                    checkJump(startX - 2, startY + 2, goalX, goalY);
+        if (startX - 2 >= 0 && startY + 2 < board.height) {
+            if (!board.board[startX - 1][startY + 1].getState().equals("EMPTY") && !board.board[startX - 1][startY + 1].getState().equals("BLOCKED")) {
+                if (startX - 2 == goalX && startY + 2 == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX - 2][startY + 2].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX - 2, startY + 2}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX - 2, startY + 2});
+                        checkJump(startX - 2, startY + 2, goalX, goalY);
+                    }
                 }
             }
         }
-        if (!board.board[startX - 1][startY - 1].getState().equals("EMPTY") && !board.board[startX - 1][startY - 1].getState().equals("BLOCKED")) {
-            if (startX - 2 == goalX && startY - 2 == goalY) {
-                isMoveLegal = true;
-                return;
-            } else if (board.board[startX - 2][startY - 2].getState().equals("EMPTY")) {
-                if (!arrayInList(new int[]{startX, startY, startX - 2, startY - 2}, checkedJumps)) {
-                    checkedJumps.add(new int[]{startX, startY, startX - 2, startY - 2});
-                    checkJump(startX - 2, startY - 2, goalX, goalY);
+        if (startX - 2 >= 0 && startY - 2 >= 0) {
+            if (!board.board[startX - 1][startY - 1].getState().equals("EMPTY") && !board.board[startX - 1][startY - 1].getState().equals("BLOCKED")) {
+                if (startX - 2 == goalX && startY - 2 == goalY) {
+                    isMoveLegal = true;
+                    return;
+                } else if (board.board[startX - 2][startY - 2].getState().equals("EMPTY")) {
+                    if (!arrayInList(new int[]{startX, startY, startX - 2, startY - 2}, checkedJumps)) {
+                        checkedJumps.add(new int[]{startX, startY, startX - 2, startY - 2});
+                        checkJump(startX - 2, startY - 2, goalX, goalY);
+                    }
                 }
             }
         }
@@ -218,7 +229,7 @@ public class Game {
                     possibleSingleJumps.add(0, new Tuple(new IntTuple(i, j), new ArrayList<IntTuple>()));
                     discoverSingleRoutes((IntTuple) possibleSingleJumps.get(0).x, 0);
                     possibleLongJumps.add(0, new Tuple(new IntTuple(i, j), new ArrayList<IntTuple>()));
-                    discoverJumpRoutes(new IntTuple(i,j));
+                    discoverJumpRoutes(new IntTuple(i, j));
                     for (int k = 0; k < index; k++) {
                         discoverJumpRoutes(tempJumpList.get(k));
                     }
@@ -235,22 +246,22 @@ public class Game {
             }
         }
 
-        for (Tuple a: possibleLongJumps){
+        for (Tuple a : possibleLongJumps) {
             IntTuple start = (IntTuple) a.x;
             double startDistance = sqrt(pow(finishFields[index].x - start.x, 2) + pow(finishFields[index].y - start.y, 2));
-            for (IntTuple b: (ArrayList<IntTuple>)a.y) {
+            for (IntTuple b : (ArrayList<IntTuple>) a.y) {
                 double finishingDistance = sqrt(pow(finishFields[index].x - b.x, 2) + pow(finishFields[index].y - b.y, 2));
-                if (finishingDistance<startDistance){
+                if (finishingDistance < startDistance) {
                     movesInCorrectDirection.add(new Tuple(start, b));
                 }
             }
         }
-        for (Tuple a: possibleSingleJumps){
+        for (Tuple a : possibleSingleJumps) {
             IntTuple start = (IntTuple) a.x;
             double startDistance = sqrt(pow(finishFields[index].x - start.x, 2) + pow(finishFields[index].y - start.y, 2));
-            for (IntTuple b: (ArrayList<IntTuple>)a.y) {
+            for (IntTuple b : (ArrayList<IntTuple>) a.y) {
                 double finishingDistance = sqrt(pow(finishFields[index].x - b.x, 2) + pow(finishFields[index].y - b.y, 2));
-                if (finishingDistance<startDistance){
+                if (finishingDistance < startDistance) {
                     movesInCorrectDirection.add(new Tuple(start, b));
                 }
             }
@@ -286,8 +297,6 @@ public class Game {
         }*/
 
 
-
-
         return resultVector;
     }
 
@@ -310,7 +319,7 @@ public class Game {
                 index++;
             }
         }
-        if (start.x + 2 < board.width && start.y - 2 >=0) {
+        if (start.x + 2 < board.width && start.y - 2 >= 0) {
             if (!board.board[start.x + 1][start.y - 1].getState().equals("EMPTY") &&
                     !board.board[start.x + 1][start.y - 1].getState().equals("BLOCKED") &&
                     board.board[start.x + 2][start.y - 2].getState().equals("EMPTY") &&
@@ -328,7 +337,7 @@ public class Game {
                 index++;
             }
         }
-        if (start.x -4 >= 0) {
+        if (start.x - 4 >= 0) {
             if (!board.board[start.x - 2][start.y].getState().equals("EMPTY") &&
                     !board.board[start.x - 2][start.y].getState().equals("BLOCKED") &&
                     board.board[start.x - 4][start.y].getState().equals("EMPTY") &&
@@ -365,17 +374,17 @@ public class Game {
                 tempResults.add(new IntTuple(start.x + 1, start.y - 1));
             }
         }
-        if (start.x - 1 >= 0 && start.y -1 >= 0) {
+        if (start.x - 1 >= 0 && start.y - 1 >= 0) {
             if (board.board[start.x - 1][start.y - 1].getState().equals("EMPTY")) {
                 tempResults.add(new IntTuple(start.x - 1, start.y - 1));
             }
         }
-        if (start.x -2 >= 0) {
+        if (start.x - 2 >= 0) {
             if (board.board[start.x - 2][start.y].getState().equals("EMPTY")) {
-                tempResults.add(new IntTuple(start.x -2 , start.y));
+                tempResults.add(new IntTuple(start.x - 2, start.y));
             }
         }
-        if (start.x - 1 >= 0 &&  start.y + 1 < board.height) {
+        if (start.x - 1 >= 0 && start.y + 1 < board.height) {
             if (board.board[start.x - 1][start.y + 1].getState().equals("EMPTY")) {
                 tempResults.add(new IntTuple(start.x - 1, start.y + 1));
             }
@@ -384,20 +393,25 @@ public class Game {
         possibleSingleJumps.get(index).y = tempResults;
     }
 
-    private boolean tupleInList(IntTuple a, ArrayList<IntTuple> b){
+    private boolean tupleInList(IntTuple a, ArrayList<IntTuple> b) {
         boolean contains = false;
 
-        for (IntTuple c: b){
-            if (c.x == a.x && c.y == a.y){contains = true;}
+        for (IntTuple c : b) {
+            if (c.x == a.x && c.y == a.y) {
+                contains = true;
+            }
         }
 
         return contains;
     }
-    private boolean arrayInList(int[] a, ArrayList<int[]> b){
+
+    private boolean arrayInList(int[] a, ArrayList<int[]> b) {
         boolean contains = false;
 
-        for (int[] c: b){
-            if (c[0] == a[0] && c[1] == a[1] && c[2] == a[2] && c[3] == a[3]){contains = true;}
+        for (int[] c : b) {
+            if (c[0] == a[0] && c[1] == a[1] && c[2] == a[2] && c[3] == a[3]) {
+                contains = true;
+            }
         }
 
         return contains;
