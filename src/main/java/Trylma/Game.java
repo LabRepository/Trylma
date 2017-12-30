@@ -20,7 +20,7 @@ public class Game {
 
     public int[] moveBot(String color) {
         int[] result = bot(color);
-        System.out.print("[" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + "]");
+        System.out.print("[" + win[0] + ", " + win[1] + ", " + win[2] + ", " + win[3] + ", " + win[4] + ", " + win[5] + "]");
         moving(result[0], result[1], result[2], result[3]);
         return result;
     }
@@ -29,7 +29,9 @@ public class Game {
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
                 board.board[goalX][goalY].setState(board.board[startX][startY].getState());
+                board.board[goalX][goalY].setAtFinish(board.board[startX][startY].getAtFinish());
                 board.board[startX][startY].setState("EMPTY");
+                board.board[startX][startY].setAtFinish(false);
                 if (!board.board[goalX][goalY].getAtFinish()) {
                     setWin(goalX, goalY);
                 }
@@ -216,7 +218,7 @@ public class Game {
         ArrayList<Tuple> movesInCorrectDirection = new ArrayList<>();
         possibleSingleJumps = new ArrayList<>();
         possibleLongJumps = new ArrayList<>();
-        int[] resultVector = new int[]{0, 0, 0, 0};
+        int[] resultVector = new int[]{0,0,0,0};
         double bestDistance = 1000;
         IntTuple[] finishFields = new IntTuple[]{new IntTuple(12, 16), new IntTuple(0, 12), new IntTuple(0, 4),
                 new IntTuple(12, 0), new IntTuple(24, 4), new IntTuple(24, 12)};
@@ -267,10 +269,24 @@ public class Game {
             }
         }
         Random rand = new Random();
-        index = rand.nextInt(movesInCorrectDirection.size());
-        IntTuple start = (IntTuple) movesInCorrectDirection.get(index).x;
-        IntTuple finish = (IntTuple) movesInCorrectDirection.get(index).y;
-        resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+        if (movesInCorrectDirection.size() != 0) {
+            index = rand.nextInt(movesInCorrectDirection.size());
+            IntTuple start = (IntTuple) movesInCorrectDirection.get(index).x;
+            IntTuple finish = (IntTuple) movesInCorrectDirection.get(index).y;
+            resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+        } else {
+            ArrayList<IntTuple> finishArray = new ArrayList<>();
+            while (finishArray.size()==0) {
+                index = rand.nextInt(possibleSingleJumps.size());
+                IntTuple start = (IntTuple) possibleSingleJumps.get(index).x;
+                finishArray = (ArrayList<IntTuple>) possibleSingleJumps.get(index).y;
+                if (finishArray.size() > 0) {
+                    index = rand.nextInt(finishArray.size());
+                    IntTuple finish = finishArray.get(index);
+                    resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+                }
+            }
+        }
 
         /*for (Tuple a : possibleLongJumps) {
             for (IntTuple b : (ArrayList<IntTuple>) a.y) {
