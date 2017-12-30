@@ -202,10 +202,6 @@ public class Gamelobby {
         turn.addLast(c);
         c = turn.getFirst();
         respond("TURN;"+c.toString());
-        if(bot.contains(c));
-        {
-            botmove(c);
-        }
     }
 
     public void restart(){
