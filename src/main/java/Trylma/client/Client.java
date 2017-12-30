@@ -1,7 +1,5 @@
 package Trylma.client;
 
-import Trylma.Color;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
