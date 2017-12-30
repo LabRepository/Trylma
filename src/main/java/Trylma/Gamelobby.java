@@ -164,11 +164,9 @@ public class Gamelobby {
     }
 
     public void colorhelper(int tmp, Color c){
-        System.out.print("1: "+tmp);
         if(tmp<players.size()) {
             players.get(tmp).setColor(c);
         } else {
-            System.out.print("BOTTTTTTTTTTTTTT" +c.toString());
             bot.add(c);
         }
     }
