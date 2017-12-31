@@ -2,11 +2,8 @@ package Trylma;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
-//RUN SERVER!
 public class testGamelobby {
 
     Gamelobby gl;
@@ -29,7 +26,7 @@ public class testGamelobby {
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assertFalse(gl.getstate());
+        assertTrue(gl.getstate());
     }
 
     @Test
@@ -39,7 +36,7 @@ public class testGamelobby {
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assertFalse(gl.getstate());
+        assertTrue(gl.getstate());
     }
 
     @Test
@@ -50,7 +47,7 @@ public class testGamelobby {
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assertFalse(gl.getstate());
+        assertTrue(gl.getstate());
     }
     @Test
     public void rungamestatefiveBot(){
@@ -83,6 +80,17 @@ public class testGamelobby {
         Game g2 = gl.game;
         assertSame(g1,g2);
     }
+
+    @Test
+    public void singletonnotnulltest(){
+        setup();
+        gl.addbot();
+        gl.addbot();
+        gl.rungame();
+        Game g1 = gl.game;
+        assertNotNull(g1);
+    }
+
 
 
 }

@@ -4,6 +4,7 @@ package Trylma.client;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+//RUN Server!
 public class testingClient {
     Client c = new Client();
     @Test
