@@ -8,19 +8,41 @@ import javax.swing.*;
 
 /**
  * This Class is Graphical representation of Game Board
+ * lightGray == background color
+ * GRAY == Empty place for pawn
  * @author Jakub Czyszczonik
  * @see javax.swing.JPanel
  */
 public class BoardGUI extends JPanel {
+    /**
+     * Board height
+     */
     int height = 17;
+    /**
+     * Board width
+     */
     int width = 25;
-    //Length 4 - 10 pawns, length 3 - 6 pawns, length 2 - 3 pawns
-    private int lengthOfPawnFields = 4;
+    /**
+     * Active pawn X.
+     * -1 == not active
+     */
     int activeX = -1;
+    /**
+     * Active pawn Y
+     * -1 == not active
+     */
     int activeY = -1;
+    private int lengthOfPawnFields = 4;
+    /**
+     * Board of Colors
+     */
+    Color[][] board = new Color[width][height];
 
-    public Color[][] board = new Color[width][height];
-
+    /**
+     * Board constructor
+     * @param NoPlayers Number of player
+     * @param sets Sets for players
+     */
     BoardGUI(int NoPlayers, int sets) {
         setupBoard();
         setupPlayers(NoPlayers, sets);
@@ -28,12 +50,12 @@ public class BoardGUI extends JPanel {
     }
 
     /**
-     * Initialize fields as "BLOCKED", then call methods to appropriately open playable fields.
+     * Initialize fields as LIGHT_GRAY (BACKGROUND), then call methods to appropriately open GREY (playable) fields ).
      */
     private void setupBoard() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                board[i][j] = Color.lightGray;
+                board[i][j] = Color.LIGHT_GRAY;
             }
         }
         constructTriangle(0, 13, 12, Color.GRAY, 't');
@@ -161,21 +183,31 @@ public class BoardGUI extends JPanel {
         initiateFourColors();
         initiateTwoColors();
     }
+
+    /**
+     * Paints this component
+     * @param g Graphics
+     * @see Graphics
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         doDrawing(g);
     }
 
-    void doDrawing(Graphics g){
-        width = (int) Math.min((getWidth() - 20) / (13 + 12 * 0.156), (getHeight() - 20) / 17);
+    private void doDrawing(Graphics g){
+
+       // getWidth() - 20 (odestęp taki margines)) / (13 + 12 * 0.2 (12 jest nie używanych więc mniej))
+        width = (int) Math.min((getWidth() - 20) / (13 + 12 * 0.2),    (getHeight() - 20) / 17);
         Graphics2D g2d = (Graphics2D) g;
 
         for (int y = 0; y < board[0].length; y++) {
             for (int x = 0; x < board.length; x++) {
                 Color color = board[x][y];
-                if (color.getRGB() != Color.LIGHT_GRAY.getRGB()) {
+
+                if (color != Color.LIGHT_GRAY) {
                     g2d.setPaint(color);
-                    g2d.fillOval((int) (10 + x * width / 1.73), 10 + y * width, width, width);
+                    //
+                    g2d.fillOval((int) (10 + x * width / 1.6), 10 + y * width, width, width);
                 }
             }
         }
@@ -183,18 +215,26 @@ public class BoardGUI extends JPanel {
         if ((activeX != (-1)) && (activeY != (-1))) {
             Stroke oldStroke = g2d.getStroke();
             g2d.setStroke(new BasicStroke(2));
-                if (board[activeX][activeY].getRGB() == Color.BLACK.getRGB())
+                if (board[activeX][activeY] == Color.BLACK)
                 g2d.setPaint(Color.YELLOW);
             else
                 g2d.setPaint(Color.BLACK);
-            g2d.draw(new Ellipse2D.Double((10 + activeX * width / 1.73), 10 + activeY * width, width, width));
+            g2d.draw(new Ellipse2D.Double((10 + activeX * width / 1.6), 10 + activeY * width, width, width));
             g2d.setStroke(oldStroke);
         }
     }
 
+    /**
+     * Moves pawn in Board
+     * @param startX pawn start x
+     * @param startY pawn start y
+     * @param goalX pawn goal x
+     * @param golaY pawn goal y
+     */
     public void move(int startX, int startY, int goalX, int golaY){
         board[goalX][golaY] = board [startX][startY];
         board[startX][startY] = Color.GRAY;
     }
+
 
 }

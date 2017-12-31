@@ -49,7 +49,7 @@ public class Player extends Thread implements AbstractPlayer {
             is = new DataInputStream(s.getInputStream());
             os = new DataOutputStream(s.getOutputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("Socket is not connected");
         }
 
     }

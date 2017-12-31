@@ -85,6 +85,8 @@ public class Client {
     private JLabel hello = new JLabel("Welcome in our Trylma Client. Enjoy!");
     private JLabel yourcolor = new JLabel("Color");
     private JLabel serverinfo = new JLabel("Info");
+    private JLabel BotNO = new JLabel("Bot: 0");
+
     private JLabel size = new JLabel("Size");
     //BUTTONS
     private JButton start = new JButton("Start");
@@ -152,6 +154,7 @@ public class Client {
         functions.add(hello);
         functions.add(yourcolor);
         functions.add(serverinfo);
+        functions.add(BotNO);
         functions.add(size);
         functions.add(start);
         functions.add(done);
@@ -163,6 +166,7 @@ public class Client {
         serverinfo.setFont(new Font("Serif", Font.PLAIN, 20));
         size.setFont(new Font("Serif", Font.PLAIN, 20));
         hello.setFont(new Font("Serif", Font.PLAIN, 20));
+        BotNO.setFont(new Font("Serif", Font.PLAIN, 20));
 
         //Frame Section
         frame.setResizable(true);
@@ -211,7 +215,7 @@ public class Client {
                 st.nextToken();
                 info = st.nextToken();
                 if(info != null){
-                    serverinfo.setText(info);
+                    serverinfo.setText("WRONG "+info);
                 }
             } else if(msg.startsWith("MOVE")){
                     move(msg);
@@ -223,6 +227,13 @@ public class Client {
                     win(msg);
             } else if(msg.startsWith("COLOR")){
                 colormsg(msg);
+            } else if(msg.startsWith("BOT")){
+                st = new StringTokenizer(msg,";");
+                st.nextToken();
+                info = st.nextToken();
+                if(info != null){
+                    BotNO.setText("BOT: "+info);
+                }
             }
 
         }
@@ -330,20 +341,17 @@ public class Client {
      * Function send "MOVE;xs;ys;xe;ye" request to server for move validation
      * x and y represent mathematical vector [x,y]
      *
-     * @param xs x start point
-     * @param ys y start point
-     * @param xe x goal point
-     * @param ye y goal point
+     * @param startX x start point
+     * @param startY y start point
+     * @param goalX x goal point
+     * @param goalY y goal point
      *
      */
-    public void sendmove(int xs, int ys, int xe, int ye) {
-            int x = xe - xs;
-            int y = ys - ye;
-        if ((x == 1 && y == 1) || (x == 1 && y == -1) || (x == -1 && y == 1) ||
-                (x == -1 && y == -1) || (x == 2 && y == 0) || (x == -2 && y == 0)) {
-            send("MOVE;" + xs + ";" + ys + ";" + xe + ";" + ye);
-        }
-    }
+    public void sendmove(int startX, int startY, int goalX, int goalY) {
+            int x = goalX - startX;
+            int y = goalY - startY;
+            send("MOVE;" + startX + ";" + startY + ";" + goalX + ";" + goalY);
+         }
 
     /**
      * Function send "START" (game) request to server
@@ -388,33 +396,41 @@ public class Client {
 
     /**
      * This Function casts String to Trylma.Color
-     * @param c String to cast
-     * @see Trylma.Color
+     * @param color String to cast
+     * @see java.awt.Color
      */
-    public void castcolor(String c){
-        switch(c){
+    public void castcolor(String color){
+        switch(color){
             case "BLACKPAWN":
-                color = java.awt.Color.BLACK;
+                this.color = java.awt.Color.BLACK;
                 break;
             case "WHITEPAWN":
-                color = color = java.awt.Color.WHITE;;
+                this.color = java.awt.Color.WHITE;;
                 break;
             case "REDPAWN":
-                color = color = java.awt.Color.RED;;
+                this.color = java.awt.Color.RED;;
                 break;
             case "BLUEPAWN":
-                color = color = java.awt.Color.BLUE;;
+                this.color  = java.awt.Color.BLUE;;
                 break;
             case "GREENPAWN":
-                color = color = java.awt.Color.GREEN;
+                this.color = java.awt.Color.GREEN;
                 break;
             case "YELLOWPAWN":
-                color = color = java.awt.Color.YELLOW;;
+                this.color  = java.awt.Color.YELLOW;;
                 break;
             default:
                 System.out.print("Wrong Color!");
                 break;
         }
+    }
+
+    /**
+     * Color Getter
+     * @return java.awt.Color
+     */
+    public Color getColor() {
+        return color;
     }
 
     /**
@@ -439,7 +455,7 @@ public class Client {
                     for (int y = 0; y < board.board[0].length; y++) {
                         for (int x = 0; x < board.board.length; x++) {
                             java.awt.Color tmpcolor = board.board[x][y];
-                            if (tmpcolor.getRGB() == color.getRGB()) {
+                            if ((tmpcolor.getRGB() == color.getRGB())) {
                                 if ((Math.hypot(
                                         (int) (10 + board.width / 2 + x * board.width / 1.6
                                                 - mX),
@@ -490,7 +506,6 @@ public class Client {
 
                     if (!missClick) {
                         sendmove(startX,startY,goalX,goalY);
-
                     }
                     board.repaint();
                 }

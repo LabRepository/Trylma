@@ -34,7 +34,7 @@ public class Gamelobby {
     /**
      * Current game
      */
-    public Game game;
+    public volatile Game game;
     /**
      * Game state
      */
@@ -55,6 +55,7 @@ public class Gamelobby {
                 if (!players.contains(player)) {
                     players.add(player);
                     NoPlayers++;
+                    sendBotNo();
                     if (NoBots + NoPlayers > 6) {
                         removebot();
                     }
@@ -79,6 +80,7 @@ public class Gamelobby {
     public void addbot(){
         if(NoPlayers <= 6 && NoBots < 5 ) {
             NoBots++;
+            sendBotNo();
         }
     }
 
@@ -88,6 +90,7 @@ public class Gamelobby {
     public void removebot(){
         if(NoBots>0){
             NoBots--;
+            sendBotNo();
         }
     }
 
@@ -228,6 +231,7 @@ public class Gamelobby {
             game = null;
             isrunning = false;
             turn.clear();
+            restart();
         }
     }
 
@@ -257,6 +261,10 @@ public class Gamelobby {
         c = turn.getFirst();
         if(bot.contains(c)){
             botmove(c);
+            if(turn.size() > 1) {
+                c = turn.getFirst();
+            }
+
         }
         respond("TURN;"+c.toString());
     }
@@ -270,6 +278,7 @@ public class Gamelobby {
         turn.clear();
         bot.clear();
         NoBots = 0;
+        sendBotNo();
         respond("RESTART");
     }
 
@@ -298,5 +307,9 @@ public class Gamelobby {
      */
     public int getNoBots(){
         return NoBots;
+    }
+
+    public void sendBotNo(){
+        respond("BOT;"+getNoBots());
     }
 }

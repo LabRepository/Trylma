@@ -85,7 +85,9 @@ public class Server {
         }
     }
     public static void exit(Player player){
-        players.remove(player);
+        if(players.contains(player)) {
+            players.remove(player);
+        }
     }
 
 }
