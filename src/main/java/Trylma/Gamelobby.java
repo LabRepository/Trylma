@@ -113,43 +113,47 @@ public class Gamelobby {
 
     /**
      * Function runs game, checks conditions and give players color
+     * Game Run uses Singleton Pattern
      */
     public void rungame() {
-        if(isrunning){
-            return;
-        }
-        int gamers = NoBots+NoPlayers;
-        switch (gamers) {
-            case 2:
-                game = new Game(gamers,1);
-                isrunning = true;
-                respond("START;"+gamers);
-                addcolors(gamers);
-                respond("TURN;"+turn.getFirst().toString());
-                break;
-            case 3:
-                game = new Game(gamers,1);
-                isrunning = true;
-                respond("START;"+gamers);
-                addcolors(gamers);
-                respond("TURN;"+turn.getFirst().toString());
-                break;
-            case 4:
-                game = new Game(gamers,1);
-                isrunning = true;
-                respond("START;"+gamers);
-                addcolors(gamers);
-                respond("TURN;"+turn.getFirst().toString());
-                break;
-            case 6:
-                game = new Game(gamers,1);
-                isrunning = true;
-                respond("START;"+gamers);
-                addcolors(gamers);
-                respond("TURN;"+turn.getFirst().toString());
-                break;
-            default:
-                respond("Wrng;NoPlayers");
+        if(game == null && isrunning){
+            synchronized (game) {
+                if(game == null) {
+                    int gamers = NoBots + NoPlayers;
+                    switch (gamers) {
+                        case 2:
+                            game = new Game(gamers, 1);
+                            isrunning = true;
+                            respond("START;" + gamers);
+                            addcolors(gamers);
+                            respond("TURN;" + turn.getFirst().toString());
+                            break;
+                        case 3:
+                            game = new Game(gamers, 1);
+                            isrunning = true;
+                            respond("START;" + gamers);
+                            addcolors(gamers);
+                            respond("TURN;" + turn.getFirst().toString());
+                            break;
+                        case 4:
+                            game = new Game(gamers, 1);
+                            isrunning = true;
+                            respond("START;" + gamers);
+                            addcolors(gamers);
+                            respond("TURN;" + turn.getFirst().toString());
+                            break;
+                        case 6:
+                            game = new Game(gamers, 1);
+                            isrunning = true;
+                            respond("START;" + gamers);
+                            addcolors(gamers);
+                            respond("TURN;" + turn.getFirst().toString());
+                            break;
+                        default:
+                            respond("Wrng;NoPlayers");
+                    }
+                }
+            }
         }
 
     }
@@ -242,9 +246,8 @@ public class Gamelobby {
      */
     public boolean isturn(Color c){
 
-        if(turn.getFirst() == c){
-            return true;
-        } return false;
+        if(turn.getFirst() == c) return true;
+        return false;
     }
 
     /**

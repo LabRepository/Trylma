@@ -1,7 +1,6 @@
 package Trylma.server;
 
 
-import Trylma.Gamelobby;
 import org.junit.Test;
 
 import java.net.Socket;

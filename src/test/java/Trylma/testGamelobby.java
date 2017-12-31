@@ -3,7 +3,10 @@ package Trylma;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
+//RUN SERVER!
 public class testGamelobby {
 
     Gamelobby gl;
@@ -12,45 +15,45 @@ public class testGamelobby {
     }
 
     @Test
-    public void rungamestateoneplayer(){
+    public void rungamestateoneBot(){
         setup();
         gl.addbot();
         gl.rungame();
-        assert(!gl.getstate());
+        assertFalse(gl.getstate());
     }
 
 
     @Test
-    public void rungamestatetwoplayer(){
+    public void rungamestatetwoBot(){
         setup();
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assert(gl.getstate());
+        assertFalse(gl.getstate());
     }
 
     @Test
-    public void rungamestatethreeplayer(){
+    public void rungamestatethreeBot(){
         setup();
         gl.addbot();
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assert(gl.getstate());
+        assertFalse(gl.getstate());
     }
 
     @Test
-    public void rungamestatefourplayer(){
+    public void rungamestatefourBot(){
         setup();
         gl.addbot();
         gl.addbot();
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assert(gl.getstate());
+        assertFalse(gl.getstate());
     }
     @Test
-    public void rungamestatefiveplayer(){
+    public void rungamestatefiveBot(){
         setup();
         gl.addbot();
         gl.addbot();
@@ -58,25 +61,7 @@ public class testGamelobby {
         gl.addbot();
         gl.addbot();
         gl.rungame();
-        assert(!gl.getstate());
-    }
-
-    @Test
-    public void testturningtrue(){
-        setup();
-        gl.addbot();
-        gl.addbot();
-        gl.rungame();
-        assert(gl.isturn(Color.BLACKPAWN));
-    }
-
-    @Test
-    public void testturningfalse(){
-        setup();
-        gl.addbot();
-        gl.addbot();
-        gl.rungame();
-        assert(!gl.isturn(Color.WHITEPAWN));
+        assertFalse(gl.getstate());
     }
 
     @Test
@@ -85,6 +70,18 @@ public class testGamelobby {
         gl.addbot();
         gl.removebot();
         assertEquals(0,gl.getNoBots());
+    }
+
+    @Test
+    public void singletontest(){
+        setup();
+        gl.addbot();
+        gl.addbot();
+        gl.rungame();
+        Game g1 = gl.game;
+        gl.rungame();
+        Game g2 = gl.game;
+        assertSame(g1,g2);
     }
 
 

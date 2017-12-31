@@ -6,6 +6,6 @@ package Trylma.server;
  */
 public interface AbstractPlayer {
 
-    public void send(String msg);
-    public void move(String received);
+    void send(String msg);
+    void move(String received);
 }

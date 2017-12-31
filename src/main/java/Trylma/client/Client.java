@@ -405,19 +405,19 @@ public class Client {
                 this.color = java.awt.Color.BLACK;
                 break;
             case "WHITEPAWN":
-                this.color = java.awt.Color.WHITE;;
+                this.color = java.awt.Color.WHITE;
                 break;
             case "REDPAWN":
-                this.color = java.awt.Color.RED;;
+                this.color = java.awt.Color.RED;
                 break;
             case "BLUEPAWN":
-                this.color  = java.awt.Color.BLUE;;
+                this.color  = java.awt.Color.BLUE;
                 break;
             case "GREENPAWN":
                 this.color = java.awt.Color.GREEN;
                 break;
             case "YELLOWPAWN":
-                this.color  = java.awt.Color.YELLOW;;
+                this.color  = java.awt.Color.YELLOW;
                 break;
             default:
                 System.out.print("Wrong Color!");
