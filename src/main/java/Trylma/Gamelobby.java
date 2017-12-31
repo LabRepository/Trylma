@@ -116,8 +116,8 @@ public class Gamelobby {
      * Game Run uses Singleton Pattern
      */
     public void rungame() {
-        if(game == null && isrunning){
-            synchronized (game) {
+        if(game == null && !isrunning){
+            synchronized (this) {
                 if(game == null) {
                     int gamers = NoBots + NoPlayers;
                     switch (gamers) {

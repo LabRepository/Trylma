@@ -20,7 +20,6 @@ public class Game {
 
     public int[] moveBot(String color) {
         int[] result = bot(color);
-        System.out.print("[" + win[0] + ", " + win[1] + ", " + win[2] + ", " + win[3] + ", " + win[4] + ", " + win[5] + "]");
         moving(result[0], result[1], result[2], result[3]);
         return result;
     }
@@ -28,10 +27,8 @@ public class Game {
     public void moving(int startX, int startY, int goalX, int goalY) {
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
-                System.out.print("["+board.board[startX][startY].getAtFinish()+", "+board.board[startX][startY].getState()+"]");
                 board.board[goalX][goalY]=board.board[startX][startY];
                 board.board[startX][startY]=new Fields("EMPTY");
-                System.out.print("["+board.board[goalX][goalY].getAtFinish()+", "+board.board[goalX][goalY].getState()+"]");
                 if (!board.board[goalX][goalY].getAtFinish()) {
                     setWin(goalX, goalY);
                 }
@@ -55,7 +52,6 @@ public class Game {
     }
 
     private void setWin(int x, int y) {
-        System.out.print("---"+board.board[x][y].getState()+"---");
         switch (board.board[x][y].getState()) {
             case "BLACKPAWN":
                 if (blackWinArea(x, y)) {
@@ -94,7 +90,6 @@ public class Game {
                 }
                 break;
         }
-        System.out.print("---"+board.board[x][y].getState()+"---");
     }
 
     private boolean isMoveLegal = false;
@@ -193,7 +188,6 @@ public class Game {
     }
 
     private boolean blueWinArea(int x, int y) {
-        System.out.print("\n[" + x + ", " + y + ", " +((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6)) +"]");
         return ((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6));
     }
 

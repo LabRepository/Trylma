@@ -64,7 +64,6 @@ public class Player extends Thread implements AbstractPlayer {
         while (isloggedin) {
             try {
                 received = is.readUTF();
-                System.out.println(id + ": " + received);
                 inputhandler(received);
             } catch (IOException e) {
                 try {
