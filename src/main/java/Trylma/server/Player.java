@@ -147,8 +147,8 @@ public class Player extends Thread implements AbstractPlayer {
                 try{
                     Server.gamelobby.game.moving(startX, startY, goalX, goalY);
                     Server.gamelobby.hasWinner();
-                    Server.gamelobby.moveturn(color);
                     Server.gamelobby.respond(received);
+                    Server.gamelobby.moveturn(color);
                 } catch(RuntimeException e) {
                     send("Wrng;MOVE");
                 }
