@@ -5,8 +5,9 @@ import static java.lang.Thread.sleep;
 public class temporaryDisplayClass {
     public static void main(String[] args) {
         try {
-            Game game = new Game(2, 1);
+            Game game = new Game(6, 1);
             Board board = game.board;
+            int indx = 0;
             while (true){
             for (int i = 0; i < 17; i++) {
                 for (int j = 0; j < 25; j++) {
@@ -41,8 +42,7 @@ public class temporaryDisplayClass {
                 }
                 System.out.print("\n");
             }
-                game.moveBot("BLACKPAWN");
-                game.moveBot("WHITEPAWN");
+
                 String a = game.checkEnd();
                 switch(a){
                     case "NONE":
@@ -51,7 +51,33 @@ public class temporaryDisplayClass {
                         System.out.print(a + " WON!");
                         return;
                 }
-                sleep(100);
+                switch (indx){
+                    case 0:
+                        game.moveBot("BLACKPAWN");
+                        indx++;
+                        break;
+                    case 1:
+                        game.moveBot("REDPAWN");
+                        indx++;
+                        break;
+                    case 2:
+                        game.moveBot("BLUEPAWN");
+                        indx++;
+                        break;
+                    case 3:
+                        game.moveBot("WHITEPAWN");
+                        indx++;
+                        break;
+                    case 4:
+                        game.moveBot("GREENPAWN");
+                        indx++;
+                        break;
+                    case 5:
+                        game.moveBot("YELLOWPAWN");
+                        indx=0;
+                        break;
+                }
+                sleep(1);
             }
         } catch (InterruptedException c){}
     }

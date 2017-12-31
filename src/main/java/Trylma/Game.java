@@ -28,10 +28,10 @@ public class Game {
     public void moving(int startX, int startY, int goalX, int goalY) {
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
-                board.board[goalX][goalY].setState(board.board[startX][startY].getState());
-                board.board[goalX][goalY].setAtFinish(board.board[startX][startY].getAtFinish());
-                board.board[startX][startY].setState("EMPTY");
-                board.board[startX][startY].setAtFinish(false);
+                System.out.print("["+board.board[startX][startY].getAtFinish()+", "+board.board[startX][startY].getState()+"]");
+                board.board[goalX][goalY]=board.board[startX][startY];
+                board.board[startX][startY]=new Fields("EMPTY");
+                System.out.print("["+board.board[goalX][goalY].getAtFinish()+", "+board.board[goalX][goalY].getState()+"]");
                 if (!board.board[goalX][goalY].getAtFinish()) {
                     setWin(goalX, goalY);
                 }
@@ -55,6 +55,7 @@ public class Game {
     }
 
     private void setWin(int x, int y) {
+        System.out.print("---"+board.board[x][y].getState()+"---");
         switch (board.board[x][y].getState()) {
             case "BLACKPAWN":
                 if (blackWinArea(x, y)) {
@@ -67,27 +68,33 @@ public class Game {
                     board.board[x][y].setAtFinish(true);
                     win[1] += 1;
                 }
+                break;
             case "BLUEPAWN":
                 if (blueWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
                     win[2] += 1;
                 }
+                break;
             case "WHITEPAWN":
                 if (whiteWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
                     win[3] += 1;
                 }
+                break;
             case "GREENPAWN":
                 if (greenWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
                     win[4] += 1;
                 }
+                break;
             case "YELLOWPAWN":
                 if (yellowWinArea(x, y)) {
                     board.board[x][y].setAtFinish(true);
                     win[5] += 1;
                 }
+                break;
         }
+        System.out.print("---"+board.board[x][y].getState()+"---");
     }
 
     private boolean isMoveLegal = false;
@@ -186,6 +193,7 @@ public class Game {
     }
 
     private boolean blueWinArea(int x, int y) {
+        System.out.print("\n[" + x + ", " + y + ", " +((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6)) +"]");
         return ((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6));
     }
 
