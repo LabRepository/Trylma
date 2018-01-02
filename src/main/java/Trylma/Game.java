@@ -11,7 +11,7 @@ public class Game {
     Board board;
     private int numberOfPawns = 10;
     private int[] win = new int[]{0, 0, 0, 0, 0, 0};
-    private String[] winColour = new String[]{"BLACK", "RED", "BLUE", "WHITE", "GREEN", "YELLOW"};
+    private String[] winColour = new String[]{"BLACKPAWN", "REDPAWN", "BLUEPAWN", "WHITEPAWN", "GREENPAWN", "YELLOWPAWN"};
     private ArrayList<int[]> checkedJumps = new ArrayList<>();
 
     Game(int players, int sets) {
@@ -20,18 +20,16 @@ public class Game {
 
     public int[] moveBot(String color) {
         int[] result = bot(color);
-        System.out.print("[" + win[0] + ", " + win[1] + ", " + win[2] + ", " + win[3] + ", " + win[4] + ", " + win[5] + "]");
         moving(result[0], result[1], result[2], result[3]);
+        System.out.print("[" + win[0] + ", " + win[1] + ", " + win[2] + ", " + win[3] + ", " + win[4] + ", " + win[5] + "]");
         return result;
     }
 
     public void moving(int startX, int startY, int goalX, int goalY) {
         if (!board.board[startX][startY].getState().equals("EMPTY") && !board.board[startX][startY].getState().equals("BLOCKED")) {
             if (legalMove(startX, startY, goalX, goalY)) {
-                System.out.print("["+board.board[startX][startY].getAtFinish()+", "+board.board[startX][startY].getState()+"]");
-                board.board[goalX][goalY]=board.board[startX][startY];
-                board.board[startX][startY]=new Fields("EMPTY");
-                System.out.print("["+board.board[goalX][goalY].getAtFinish()+", "+board.board[goalX][goalY].getState()+"]");
+                board.board[goalX][goalY] = board.board[startX][startY];
+                board.board[startX][startY] = new Fields("EMPTY");
                 if (!board.board[goalX][goalY].getAtFinish()) {
                     setWin(goalX, goalY);
                 }
@@ -42,6 +40,15 @@ public class Game {
             throw new RuntimeException("Trying to move a field which is not a pawn!");
         }
         checkedJumps = new ArrayList<>();
+    }
+
+    int colorIndex(int x, int y){
+        for (int i = 0; i < 6; i++) {
+            if (board.board[x][y].getState().equals(winColour[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     String checkEnd() {
@@ -55,46 +62,10 @@ public class Game {
     }
 
     private void setWin(int x, int y) {
-        System.out.print("---"+board.board[x][y].getState()+"---");
-        switch (board.board[x][y].getState()) {
-            case "BLACKPAWN":
-                if (blackWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[0] += 1;
-                }
-                break;
-            case "REDPAWN":
-                if (redWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[1] += 1;
-                }
-                break;
-            case "BLUEPAWN":
-                if (blueWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[2] += 1;
-                }
-                break;
-            case "WHITEPAWN":
-                if (whiteWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[3] += 1;
-                }
-                break;
-            case "GREENPAWN":
-                if (greenWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[4] += 1;
-                }
-                break;
-            case "YELLOWPAWN":
-                if (yellowWinArea(x, y)) {
-                    board.board[x][y].setAtFinish(true);
-                    win[5] += 1;
-                }
-                break;
+        if (inFinishArea(x, y, x, y)){
+            board.board[x][y].setAtFinish(true);
+            win[colorIndex(x, y)] += 1;
         }
-        System.out.print("---"+board.board[x][y].getState()+"---");
     }
 
     private boolean isMoveLegal = false;
@@ -106,6 +77,9 @@ public class Game {
                 checkJump(startX, startY, goalX, goalY);
             } else {
                 isMoveLegal = true;
+            }
+            if (board.board[startX][startY].getAtFinish()) {
+                isMoveLegal = inFinishArea(startX, startY, goalX, goalY);
             }
         }
         return isMoveLegal;
@@ -192,29 +166,22 @@ public class Game {
         }
     }
 
-    private boolean blueWinArea(int x, int y) {
-        System.out.print("\n[" + x + ", " + y + ", " +((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6)) +"]");
-        return ((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6));
-    }
-
-    private boolean whiteWinArea(int x, int y) {
-        return (y < 4);
-    }
-
-    private boolean greenWinArea(int x, int y) {
-        return ((x > 19 && 3 < y && y < 8) || (x > 17 && 3 < y && y < 6));
-    }
-
-    private boolean yellowWinArea(int x, int y) {
-        return ((x > 19 && 8 < y && y < 13) || (x > 17 && 10 < y && y < 13));
-    }
-
-    private boolean blackWinArea(int x, int y) {
-        return (y > 12);
-    }
-
-    private boolean redWinArea(int x, int y) {
-        return ((x < 5 && 8 < y && y < 13) || (x < 7 && 10 < y && y < 13));
+    private boolean inFinishArea(int sx, int sy, int x, int y) {
+        switch (board.board[sx][sy].getState()) {
+            case "BLACKPAWN":
+                return (y > 12);
+            case "REDPAWN":
+                return ((x < 5 && 8 < y && y < 13) || (x < 7 && 10 < y && y < 13));
+            case "BLUEPAWN":
+                return ((x < 5 && 3 < y && y < 8) || (x < 7 && 3 < y && y < 6));
+            case "WHITEPAWN":
+                return (y < 4);
+            case "GREENPAWN":
+                return ((x > 19 && 3 < y && y < 8) || (x > 17 && 3 < y && y < 6));
+            case "YELLOWPAWN":
+                return ((x > 19 && 8 < y && y < 13) || (x > 17 && 10 < y && y < 13));
+        }
+        return false;
     }
 
     private ArrayList<Tuple> possibleSingleJumps = new ArrayList<>();
@@ -226,7 +193,7 @@ public class Game {
         ArrayList<Tuple> movesInCorrectDirection = new ArrayList<>();
         possibleSingleJumps = new ArrayList<>();
         possibleLongJumps = new ArrayList<>();
-        int[] resultVector = new int[]{0,0,0,0};
+        int[] resultVector = new int[]{0, 0, 0, 0};
         double bestDistance = 1000;
         IntTuple[] finishFields = new IntTuple[]{new IntTuple(12, 16), new IntTuple(0, 12), new IntTuple(0, 4),
                 new IntTuple(12, 0), new IntTuple(24, 4), new IntTuple(24, 12)};
@@ -261,7 +228,7 @@ public class Game {
             double startDistance = sqrt(pow(finishFields[index].x - start.x, 2) + pow(finishFields[index].y - start.y, 2));
             for (IntTuple b : (ArrayList<IntTuple>) a.y) {
                 double finishingDistance = sqrt(pow(finishFields[index].x - b.x, 2) + pow(finishFields[index].y - b.y, 2));
-                if (finishingDistance < startDistance) {
+                if (finishingDistance <= startDistance) {
                     movesInCorrectDirection.add(new Tuple(start, b));
                 }
             }
@@ -271,30 +238,44 @@ public class Game {
             double startDistance = sqrt(pow(finishFields[index].x - start.x, 2) + pow(finishFields[index].y - start.y, 2));
             for (IntTuple b : (ArrayList<IntTuple>) a.y) {
                 double finishingDistance = sqrt(pow(finishFields[index].x - b.x, 2) + pow(finishFields[index].y - b.y, 2));
-                if (finishingDistance < startDistance) {
+                if (finishingDistance <= startDistance) {
                     movesInCorrectDirection.add(new Tuple(start, b));
                 }
             }
         }
+
         Random rand = new Random();
-        if (movesInCorrectDirection.size() != 0) {
-            index = rand.nextInt(movesInCorrectDirection.size());
-            IntTuple start = (IntTuple) movesInCorrectDirection.get(index).x;
-            IntTuple finish = (IntTuple) movesInCorrectDirection.get(index).y;
-            resultVector = new int[]{start.x, start.y, finish.x, finish.y};
-        } else {
-            ArrayList<IntTuple> finishArray = new ArrayList<>();
-            while (finishArray.size()==0) {
-                index = rand.nextInt(possibleSingleJumps.size());
-                IntTuple start = (IntTuple) possibleSingleJumps.get(index).x;
-                finishArray = (ArrayList<IntTuple>) possibleSingleJumps.get(index).y;
-                if (finishArray.size() > 0) {
-                    index = rand.nextInt(finishArray.size());
-                    IntTuple finish = finishArray.get(index);
-                    resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+        do {
+            /*for (int i = 0; i<movesInCorrectDirection.size(); i++){
+                IntTuple start = (IntTuple) movesInCorrectDirection.get(i).x;
+                IntTuple finish = (IntTuple) movesInCorrectDirection.get(i).y;
+                System.out.print("\n[" + start.x + ", " + start.y + "->" + finish.x + ", " + finish.y + "]");
+            }*/
+            if (movesInCorrectDirection.size() != 0) {
+                index = rand.nextInt(movesInCorrectDirection.size());
+                IntTuple start = (IntTuple) movesInCorrectDirection.get(index).x;
+                IntTuple finish = (IntTuple) movesInCorrectDirection.get(index).y;
+                resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+            } else {
+                ArrayList<IntTuple> finishArray = new ArrayList<>();
+                while (finishArray.size() == 0) {
+                    index = rand.nextInt(possibleSingleJumps.size());
+                    IntTuple start = (IntTuple) possibleSingleJumps.get(index).x;
+                    finishArray = (ArrayList<IntTuple>) possibleSingleJumps.get(index).y;
+                    if (finishArray.size() == 0){
+                        index = rand.nextInt(possibleLongJumps.size());
+                        start = (IntTuple) possibleLongJumps.get(index).x;
+                        finishArray = (ArrayList<IntTuple>) possibleLongJumps.get(index).y;
+                    }
+                    if (finishArray.size() > 0) {
+                        index = rand.nextInt(finishArray.size());
+                        IntTuple finish = finishArray.get(index);
+                        resultVector = new int[]{start.x, start.y, finish.x, finish.y};
+                    }
                 }
             }
-        }
+        } while (board.board[resultVector[0]][resultVector[1]].getAtFinish() &&
+                !inFinishArea(resultVector[0], resultVector[1], resultVector[2], resultVector[3]));
 
         /*for (Tuple a : possibleLongJumps) {
             for (IntTuple b : (ArrayList<IntTuple>) a.y) {
