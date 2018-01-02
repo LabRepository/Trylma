@@ -53,26 +53,32 @@ public class temporaryDisplayClass {
                 }
                 switch (indx){
                     case 0:
+                        System.out.print("B");
                         game.moveBot("BLACKPAWN");
                         indx++;
                         break;
                     case 1:
+                        System.out.print("R");
                         game.moveBot("REDPAWN");
                         indx++;
                         break;
                     case 2:
+                        System.out.print("b");
                         game.moveBot("BLUEPAWN");
                         indx++;
                         break;
                     case 3:
+                        System.out.print("W");
                         game.moveBot("WHITEPAWN");
                         indx++;
                         break;
                     case 4:
+                        System.out.print("G");
                         game.moveBot("GREENPAWN");
                         indx++;
                         break;
                     case 5:
+                        System.out.print("Y");
                         game.moveBot("YELLOWPAWN");
                         indx=0;
                         break;
