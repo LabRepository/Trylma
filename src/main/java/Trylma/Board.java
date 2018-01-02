@@ -18,25 +18,6 @@ public class Board {
         setupBoard();
         setupPlayers(NoPlayers, sets);
     }
-
-    // Old way of setting up the board, pretty messy
-     /*private void setupBoard(){
-        for(int i = 0; i<width; i++){
-            for (int j = 0; j<height; j++){
-                if(((i+j)%2==0) && ((3<j && j<13)||(8<i && i<16))  &&
-                        ((i!=9 && i!=15) || (j!=1 && j!= 15)) &&
-                        ((i!=10 && i!=14) ||(j!=0 && j!= 16)) &&
-                        ((j!=6 && j!=10) || (i!=0 && i!=24)) &&
-                        ((j!=7 && j!=9) || (i!=1 && i!= 23)) &&
-                        (j!= 8 || (i!=0 && i!=2 && i!=24 && i!=22))){
-                    board[i][j] = new Fields("EMPTY");
-                } else {
-                    board[i][j] = new Fields("BLOCKED");
-                }
-            }
-        }
-    }*/
-
     /**
      * Initialize fields as "BLOCKED", then call methods to appropriately open playable fields.
      */
@@ -173,34 +154,4 @@ public class Board {
         initiateFourColors();
         initiateTwoColors();
     }
-    //old triangle constructing method (only for pawns)
-    /*
-    void triangleShape(int startingRow, int middleCol, String type) {
-        for (int i = 0; i < 4; i++) {
-            if (i % 2 == 0) {
-                board[startingRow+i][middleCol - i].setState(type);
-                board[startingRow+i][middleCol].setState(type);
-                board[startingRow+i][middleCol + i].setState(type);
-            } else {
-                board[startingRow+i][middleCol - i].setState(type);
-                board[startingRow+i][middleCol - i + 2].setState(type);
-                board[startingRow+i][middleCol + i].setState(type);
-                board[startingRow+i][middleCol + i - 2].setState(type);
-            }
-        }
-    }
-    void reversedTriangleShape(int endingRow, int middleCol, String type){
-        for (int i = 0; i < 4; i++) {
-            if (i % 2 == 0) {
-                board[endingRow-i][middleCol - i].setState(type);
-                board[endingRow-i][middleCol].setState(type);
-                board[endingRow-i][middleCol + i].setState(type);
-            } else {
-                board[endingRow-i][middleCol - i].setState(type);
-                board[endingRow-i][middleCol - i + 2].setState(type);
-                board[endingRow-i][middleCol + i].setState(type);
-                board[endingRow-i][middleCol + i - 2].setState(type);
-            }
-        }
-    }*/
 }

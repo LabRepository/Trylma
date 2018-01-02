@@ -20,6 +20,7 @@ public class Fields {
         Fields(String beginningState) {
                 this.state = beginningState;
         }
+        Fields(){this.state = "EMPTY";}
 
         /**
          * setState checks if upcoming state is in an array of allowedStates.

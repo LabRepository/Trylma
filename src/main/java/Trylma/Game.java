@@ -194,7 +194,6 @@ public class Game {
         possibleSingleJumps = new ArrayList<>();
         possibleLongJumps = new ArrayList<>();
         int[] resultVector = new int[]{0, 0, 0, 0};
-        double bestDistance = 1000;
         IntTuple[] finishFields = new IntTuple[]{new IntTuple(12, 16), new IntTuple(0, 12), new IntTuple(0, 4),
                 new IntTuple(12, 0), new IntTuple(24, 4), new IntTuple(24, 12)};
         String[] pawnColorIndex = new String[]{"BLACKPAWN", "REDPAWN", "BLUEPAWN", "WHITEPAWN", "GREENPAWN", "YELLOWPAWN"};
@@ -246,11 +245,6 @@ public class Game {
 
         Random rand = new Random();
         do {
-            /*for (int i = 0; i<movesInCorrectDirection.size(); i++){
-                IntTuple start = (IntTuple) movesInCorrectDirection.get(i).x;
-                IntTuple finish = (IntTuple) movesInCorrectDirection.get(i).y;
-                System.out.print("\n[" + start.x + ", " + start.y + "->" + finish.x + ", " + finish.y + "]");
-            }*/
             if (movesInCorrectDirection.size() != 0) {
                 index = rand.nextInt(movesInCorrectDirection.size());
                 IntTuple start = (IntTuple) movesInCorrectDirection.get(index).x;
@@ -276,31 +270,6 @@ public class Game {
             }
         } while (board.board[resultVector[0]][resultVector[1]].getAtFinish() &&
                 !inFinishArea(resultVector[0], resultVector[1], resultVector[2], resultVector[3]));
-
-        /*for (Tuple a : possibleLongJumps) {
-            for (IntTuple b : (ArrayList<IntTuple>) a.y) {
-                IntTuple start = (IntTuple) a.x;
-                double temp = sqrt(pow(finishFields[index].x - b.x, 2)  + pow(finishFields[index].y - b.y,2));
-                if (temp < bestDistance) {
-                    bestDistance = temp;
-                    resultVector = new int[]{start.x, start.y, b.x, b.y};
-                }
-            }
-        }
-
-        for (Tuple a : possibleSingleJumps) {
-            for (IntTuple b : (ArrayList<IntTuple>) a.y) {
-                IntTuple start = (IntTuple) a.x;
-                double temp = sqrt(pow(finishFields[index].x - b.x, 2) + pow(finishFields[index].y - b.y, 2));
-                /*System.out.print("..." + start.x + "->"+ b.x + "..." + start.y + "->" + b.y + "...\n"
-                + temp + "<?" + bestDistance + "\n");
-                if (temp < bestDistance) {
-                    bestDistance = temp;
-                    resultVector = new int[]{start.x, start.y, b.x, b.y};
-                }
-            }
-        }*/
-
 
         return resultVector;
     }
