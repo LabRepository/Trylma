@@ -42,7 +42,7 @@ public class Server {
     /**
      * Default constructor
      */
-    public Server() {
+    public Server(int port) {
         try {
             listener = new ServerSocket(port);
             isrunning = true;
@@ -54,7 +54,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server s = new Server();
+        Server s = new Server(port);
         try {
             s.listening();
         } catch (IOException e){
@@ -87,6 +87,15 @@ public class Server {
     public static void exit(Player player){
         if(players.contains(player)) {
             players.remove(player);
+        }
+    }
+
+    public void shoutdown(){
+        isrunning = false;
+        try {
+            listener.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
